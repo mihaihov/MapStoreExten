@@ -4,6 +4,7 @@ import Session from "./Session";
 import { useEffect } from "react";
 import DragZone from "@mapstore/components/import/dragZone/DragZone";
 import FileUploadDialog from "./FileUploadDialog";
+import { update } from "@mapstore/actions/geostory";
 
 
 const Extension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, clearLayers, entireMap, changeMapView }) => {
@@ -19,22 +20,19 @@ const Extension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, c
         }
     }, [dialogueState]);
 
-    const [selectedSessions, setSelectedSessions] = useState({});
+    const [selectedSessions, setSelectedSessions] = useState([]);
     const handleCheckboxChange = (session) => {
         setSelectedSessions(prevSelected => {
-            const newSelected = { ...prevSelected };
-    
-            if (newSelected[session.sessionName]) {
+            if (prevSelected.some(s => s.sessionName === session.sessionName)) {
                 // If already selected, remove it
-                delete newSelected[session.sessionName];
+                return prevSelected.filter(s => s.sessionName !== session.sessionName);
             } else {
                 // Otherwise, add the full session object
-                newSelected[session.sessionName] = session;
+                return [...prevSelected, session];
             }
-    
-            return newSelected;
         });
     };
+    
     
     const getSelectedSessions = () => {
         // Filter sessions that are checked
@@ -124,10 +122,18 @@ const Extension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, c
         URL.revokeObjectURL(url);
     };
 
-    const removeSession = (session) => {
-        localStorage.removeItem("localStorageSession_" + session.sessionName)
-        setLocalStorageSession(getAllSessionsFromLocalStorage);
-    }
+const removeSession = (s) => {
+    // Get the existing sessions from localStorage
+    const storedSessions = JSON.parse(localStorage.getItem("sessions")) || [];
+
+    // Filter out the session with the given sessionName
+    const updatedSessions = storedSessions.filter(session => session.sessionName !== s.sessionName);
+
+    // Save the updated array back to localStorage
+    localStorage.setItem("sessions", JSON.stringify(updatedSessions));
+    setLocalStorageSession(updatedSessions);
+};
+
 
     const saveSessionToLocalStorage = (e) => {
         e.preventDefault();
@@ -168,7 +174,7 @@ const Extension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, c
                 try {
                     // const jsonData = JSON.parse(e.target.result);
                     // onFileSelect(jsonData); // Send parsed JSON data
-                    filterValidSessions(JSON.parse(e.target.result));
+                    addSessionsToLocalStorage(JSON.parse(e.target.result));
                 } catch (error) {
                     console.error("Invalid JSON file", error);
                     alert("Invalid JSON file.");
@@ -180,32 +186,40 @@ const Extension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, c
         }
     };
 
-    function filterValidSessions(sessions) {
-        const validSessions = [];
-        var multipleSessions = false;
-
-        if (typeof session !== "object" || session === null || Array.isArray(session)) {
-            return false; // Not an object or is null/array
-        }
+    const addSessionsToLocalStorage = (sessions) => {
+        // Get the existing sessions from localStorage
+        let storedSessions = JSON.parse(localStorage.getItem("sessions")) || [];
     
-        // If sessions is a single object, wrap it in an array for uniform processing
-        const sessionEntries = typeof sessions === "object" && !Array.isArray(sessions) 
-            ? Object.values(sessions) 
-            : [sessions];
+        // Create a Set to track existing session names for fast lookup
+        const existingNames = new Set(storedSessions.map(session => session.sessionName));
     
-        for (const session of sessionEntries) {
-            if (
-                session &&
-                Array.isArray(session.layers) &&
-                Array.isArray(session.maxExtent) &&
-                typeof session.projection === "string"
-            ) {
-                validSessions.push({ ...session });
+        // Helper function to generate a unique session name
+        const getUniqueSessionName = (name) => {
+            if (!existingNames.has(name)) {
+                existingNames.add(name);
+                return name;
             }
-        }
-        console.log(validSessions);
-        return validSessions;
-    }
+            let count = 1;
+            let newName = `${name}_${count}`;
+            while (existingNames.has(newName)) {
+                count++;
+                newName = `${name}_${count}`;
+            }
+            existingNames.add(newName);
+            return newName;
+        };
+    
+        // Add each session to the storedSessions array with a unique name if necessary
+        const updatedSessions = [...storedSessions, ...sessions.map(session => ({
+            ...session,
+            sessionName: getUniqueSessionName(session.sessionName)
+        }))];
+    
+        // Save the updated array back to localStorage
+        localStorage.setItem("sessions", JSON.stringify(updatedSessions));
+        setLocalStorageSession(updatedSessions);
+    };
+    
     
     
 
@@ -213,6 +227,17 @@ const Extension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, c
         setUploadedData(jsonData); // Store the parsed JSON data
         setDialogOpen(false); // Close the dialog
         console.log("Uploaded JSON:", jsonData);
+    };
+
+    const updateSessionName = (oldName, newName) => {
+        setLocalStorageSession((prevSessions) => {
+            return prevSessions.map((session) => {
+                if (session.sessionName === oldName) {
+                    return { ...session, sessionName: newName };  // Update immutably
+                }
+                return session;
+            });
+        });
     };
 
     return (
@@ -234,7 +259,7 @@ const Extension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, c
                                     onDragOver={(e) => {handleDragOver(e)}}
                                     ref={scrollContainerRef}>
                         <Session
-                            checked={!!selectedSessions[item.sessionName]}
+                            checked={selectedSessions.some(s => s.sessionName === item.sessionName)}
                             onCheckChange={ () => handleCheckboxChange(item)}
                             key={index}
                             session={item}
@@ -244,6 +269,7 @@ const Extension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, c
                             clearLayers={clearLayers}
                             entireMap={entireMap}
                             removeSession={removeSession}
+                            updateSessionName = {updateSessionName}
                         />
                     </div>
                 ))}

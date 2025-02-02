@@ -84,9 +84,34 @@
     border-radius: 6px;
 }
 
+.renameSession {
+    font-size: medium;
+    width: 380px;
+    text-align: center;
+    border: 1px solid gainsboro;
+    border-radius: 6px;
+}
+
 .formStyle
 {
     flex-direction: column;
+    display: flex;
+    align-items: center;
+}
+
+.renameSessionOk {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    justify-content: center;
+    align-items: center;
+    margin-left: 8px;
+}
+
+.renameSessionForm
+{
+    flex-direction: row;
+    gap: 2px;
     display: flex;
     align-items: center;
 }
@@ -117,6 +142,8 @@
     overflow-y: auto;
     justify-content: start;
 }
+
+
 
 .paginatorContainer
 {

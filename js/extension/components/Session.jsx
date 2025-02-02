@@ -1,7 +1,8 @@
 import React from 'react'
 import './Component.css'
+import { useState } from 'react'
 
-const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMapView, removeSession}) => {
+const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMapView, removeSession, updateSessionName}) => {
 
     const compareMapToSession = (sessionLayers, entireMapLayers) =>  {
         console.log("sessions");
@@ -32,6 +33,8 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
         
         return true;        
     }
+
+    const[isEditingName, setIsEditingName] = useState(false);
 
     const extractAnnotation = (layers, annotations) => {
             if (!layers || !Array.isArray(layers) || !annotations?.featureId) {
@@ -131,7 +134,7 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
 
     const exportSelectedSession = () => {
 
-        const json = JSON.stringify(session, null, 2); 
+        const json = JSON.stringify([session], null, 2); 
         const blob = new Blob([json], { type: "application/json" });
         const url = URL.createObjectURL(blob);
 
@@ -143,22 +146,45 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
         URL.revokeObjectURL(url);
     };
 
+    const [newName, setNewName] = useState(session.sessionName);
+
+    const handleRenameSubmit = (event) => {
+        event.preventDefault();
+
+        const action = event.nativeEvent.submitter.name;
+
+        if (action === "ok") {
+            updateSessionName(session.sessionName, newName)
+        }
+
+        setIsEditingName(!isEditingName);
+    }
+
     return (
         <div class="sessionContainer">
-            <input
-                type="checkbox"
-                checked={checked}
-                onChange={onCheckChange}
-                style = {{marginLeft: "4px"}}
-            />
-            <h1 class="title">{session.sessionName.replace("localstorageSession_","")}</h1>
-            <div class="button-container">
-                <button className="icon-button" onClick = {() => {ApplySessionToMap()}}><span class="glyphicon glyphicon-saved"></span></button>
-                <button className="icon-button" onClick = {() => {setIsEditingName(!isEditingName)}}><span class="glyphicon glyphicon-edit"></span></button>
-
-                <button className="icon-button" onClick={() => {exportSelectedSession()}}><span class="glyphicon glyphicon-save"></span></button>
-                <button className="icon-button" onClick={()=> {removeSession(session)}}><span class="glyphicon glyphicon-remove"></span></button>
-            </div>
+                <input style={{marginLeft: "4px", display: isEditingName ? 'none' : 'inline-flex'}}
+                    type="checkbox"
+                    checked={checked}
+                    onChange={onCheckChange}
+                />
+                <h1 class="title" style={{display: isEditingName ? 'none' : 'inline-flex'}}>{session.sessionName.replace("localstorageSession_","")}</h1>
+                <div class="button-container" style={{display: isEditingName ? 'none' : 'inline-flex'}}>
+                    <button className="icon-button" onClick = {() => {ApplySessionToMap()}}><span class="glyphicon glyphicon-saved"></span></button>
+                    <button className="icon-button" onClick = {() => {setIsEditingName(!isEditingName)}}><span class="glyphicon glyphicon-edit"></span></button>
+                    <button className="icon-button" onClick={() => {exportSelectedSession()}}><span class="glyphicon glyphicon-save"></span></button>
+                    <button className="icon-button" onClick={()=> {removeSession(session)}}><span class="glyphicon glyphicon-remove"></span></button>
+                </div>
+            { isEditingName && (
+                <form onSubmit={handleRenameSubmit} className="renameSessionForm" disabled={true}>
+                    <input placeholder={session.sessionName} type="text" name="name" class="renameSession" onChange={(e) => {setNewName(e.target.value)}}/>
+                    <button name="ok" type="submit" class="renameSessionOk">
+                        <span class="glyphicon glyphicon-ok"></span>
+                    </button>
+                    <button name="cancel" type="submit" class="renameSessionOk">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </form>
+            )}
         </div>
     )
 }
