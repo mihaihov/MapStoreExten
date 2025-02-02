@@ -1,0 +1,59 @@
+# This workflow will run tests for npm and java
+
+name: checks
+
+on:
+  workflow_call:
+  push:
+    branches:
+    - master
+    # using filter pattern: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
+    - '[cC][0-9][0-9][0-9]-+**' # c123 or c123-something for custom branch
+    - '[0-9][0-9][0-9][0-9].[0-9][0-9].xx' # stable brances. E.g. 2021.01.xx
+    - 'push-action/**'
+  pull_request:
+    branches:
+    - master
+    # using filter pattern: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
+    - '[cC][0-9][0-9][0-9]-+**' # c123 or c123-something for custom branch
+    - '[0-9][0-9][0-9][0-9].[0-9][0-9].xx' # stable brances. E.g. 2021.01.xx
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "checking out"
+        uses: actions/checkout@v2
+      - name: "Checkout submodules"
+        run: git submodule update --init --recursive
+
+      - name: "setting up npm"
+        uses: actions/setup-node@v2
+        with:
+            node-version: '20.x'
+
+      ###############
+      # NPM CHECKS
+      #############
+      - name: npm install
+        run: npm install
+
+      - name: ESlint
+        run: npm run lint
+
+      - name: Unit Tests
+        run: npm test -- --reporters mocha,coverage,coveralls
+
+      - name: build
+        run: npm run ext:build
+      # Test back-end correct build
+      - name: build-backend
+        run: npm run be:build
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Artifacts
+          path: dist/SampleExtension.zip
+          retention-days: 5
+
