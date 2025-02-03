@@ -4,6 +4,10 @@ import SaveSessionToLocalStorageExtension from "../components/Component"
 import '../assets/style.css'
 import {changeMapView, changeZoomLevel } from "@mapstore/actions/map";
 import { addLayer, clearLayers } from "@mapstore/actions/layers";
+import React from 'react';
+import Message from "@mapstore/components/I18N/HTML";
+import tooltip from "@mapstore/components/misc/enhancers/tooltip";
+
 
 
 
@@ -43,7 +47,8 @@ export default {
         Toolbar: {
             name: "SaveSessionToLocalStorageExtension",
             position: 10,
-            text: "ABC",
+            tooltip: <Message msgId="extension.helpText" />,
+            icon: <span class="glyphicon glyphicon-save" />,
             doNotHide: true,
             action: () => {
                 return {
@@ -51,7 +56,20 @@ export default {
                 }
             },
             priority: 1
-        }
+        },
+        BurgerMenu: {
+            name: 'SaveSessionToLocalStorageExtension',
+            position: 10,
+            text: <Message msgId="extension.helpText" />,
+            icon: <span class="glyphicon glyphicon-save" />,
+            action: () => {
+                return {
+                    type: 'TOGGLE_DIALOGUE',
+                }
+            },
+            priority: 1,
+            doNotHide: true
+        },
     }
 };
 

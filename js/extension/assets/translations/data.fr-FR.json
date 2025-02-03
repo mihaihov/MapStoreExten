@@ -5,7 +5,8 @@
         "saveToLocalStorage": "Enregistrer dans le stockage local",
         "title": "Enregistrer les paramètres actuels de la carte",
         "loadSessionFromFile": "Charger la session depuis un fichier",
-        "enterSessionName": "Saisissez le nom de la session"
+        "enterSessionName": "Saisissez le nom de la session",
+        "helpText": "Enregistrer la session dans le stockage local"
       }
     }
   }

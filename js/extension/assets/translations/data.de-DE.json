@@ -5,7 +5,8 @@
         "saveToLocalStorage": "In den lokalen Speicher speichern",
         "title": "Aktuelle Karteneinstellungen speichern",
         "loadSessionFromFile": "Sitzung aus Datei laden",
-        "enterSessionName": "Sitzungsnamen eingeben"
+        "enterSessionName": "Sitzungsnamen eingeben",
+        "helpText": "Enregistrer la session dans le stockage local"
       }
     }
   }
