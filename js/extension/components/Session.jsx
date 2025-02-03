@@ -1,15 +1,12 @@
 import React from 'react'
-import './Component.css'
 import { useState } from 'react'
+import '../assets/style.css'
 
 const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMapView, removeSession, updateSessionName}) => {
 
     const compareMapToSession = (sessionLayers, entireMapLayers) =>  {
-        console.log("sessions");
-        console.log(session);
-        //If map the same as session being loaded, only load annotations (if not already exists),the visibility and opacity according to session's layers.
-        //else, change zoom and extent and annotations (if not alread existing.)
-        console.log("INSIDE PARENT");
+        //If map the same as session being loaded, only load annotations (if not already exists),the visibility 
+        //and opacity according to session's layers. else, change zoom and extent and annotations (if not alread existing.)
         if (!sessionLayers || !Array.isArray(sessionLayers)) {
             return false;
         }
@@ -77,13 +74,7 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
     };
     
 
-    const isAnnotation = (layer) => {
-        return typeof layer?.id === "string" && layer.id.startsWith("annotation:");
-    }
-
     const ApplySessionToMap = () => {
-        console.log(entireMap);
-        console.log(session);
         if(compareMapToSession(extractLayers(session.layers, session.annotations), extractLayers(entireMap.layers.flat, entireMap.annotations))){
         //If map the same as session being loaded, only load annotations (if not already exists),the visibility and opacity according to session's layers.
         //else, change zoom and extent and annotations (if not alread existing.)
@@ -108,15 +99,10 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
                 }
             }
             loadLayers(annotationsToLoad);
-            changeMapView(session.center, session.zoom)
-            console.log(entireMap.layers.flat);
-            
+            changeMapView(session.center, session.zoom)            
         }
         else
         {
-            // map and the current session are not the same.
-            // change the extemt and zoom. 
-            // add annotation if not already existing (based on annotation id)
             const sessionAnnotations = extractAnnotation(session.layers, session.annotations);
             const annotationsToLoad = [];
             for(let i = 0; i<sessionAnnotations.length;i++)

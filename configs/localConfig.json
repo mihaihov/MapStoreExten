@@ -289,7 +289,7 @@
             },
             "FeedbackMask"
         ],
-        "desktop": ["Details", "SampleExtension",
+        "desktop": ["Details", "SaveSessionToLocalStorageExtension",
           {
             "name": "Map",
             "cfg": {

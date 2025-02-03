@@ -1,0 +1,12 @@
+{
+    "locale": "de-DE",
+    "messages": {
+      "extension": {
+        "saveToLocalStorage": "In den lokalen Speicher speichern",
+        "title": "Aktuelle Karteneinstellungen speichern",
+        "loadSessionFromFile": "Sitzung aus Datei laden",
+        "enterSessionName": "Sitzungsnamen eingeben"
+      }
+    }
+  }
+  

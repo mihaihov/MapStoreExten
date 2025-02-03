@@ -1,19 +1,15 @@
-import {connect, useDispatch} from "react-redux";
-import { createPlugin } from "@mapstore/utils/PluginsUtils";
+import {connect} from "react-redux";
 import { name } from "../../../config";
-import ExtensionComponent from "../components/Component"
+import SaveSessionToLocalStorageExtension from "../components/Component"
 import '../assets/style.css'
-import { getStore } from "@mapstore/utils/StateUtils";
-import { dispatchAction } from "@mapstore/actions/notifications";
-import { changeMapLimits, changeMapView, changeZoomLevel, panTo, zoomToExtent } from "@mapstore/actions/map";
-import { setLayers } from "@mapstore/actions/mapimport";
+import {changeMapView, changeZoomLevel } from "@mapstore/actions/map";
 import { addLayer, clearLayers } from "@mapstore/actions/layers";
-import { updateSettingsParams } from "@mapstore/actions/layers";
 
 
 
 
-export default createPlugin (name, {
+export default {
+    name: name,
     component: connect(state => ({
         currentSession :{
             layers: state.layers.flat,
@@ -26,7 +22,7 @@ export default createPlugin (name, {
         dialogueState: state.toggleDialogue.dialogueState
     }), {
         changeZoomLevel, addLayer, clearLayers,changeMapView
-    })(ExtensionComponent),
+    })(SaveSessionToLocalStorageExtension),
     reducers: {
         toggleDialogue : (state = {dialogueState: false}, action) => {
             if(action.type === 'TOGGLE_DIALOGUE')
@@ -45,9 +41,9 @@ export default createPlugin (name, {
     },
     containers: {
         Toolbar: {
-            name: "sampleExtension",
+            name: "SaveSessionToLocalStorageExtension",
             position: 10,
-            text: "INC",
+            text: "ABC",
             doNotHide: true,
             action: () => {
                 return {
@@ -57,6 +53,6 @@ export default createPlugin (name, {
             priority: 1
         }
     }
-});
+};
 
 

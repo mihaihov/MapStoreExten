@@ -1,7 +1,7 @@
 {
-  "name": "MapStoreExtension",
+  "name": "mapstore-extension-SaveSessionToLocalStorageExtension",
   "version": "1.0.0",
-  "description": "Template project to create MapStore extensions",
+  "description": "This extension allows the user to store sessions to localStorage of the browser.",
   "main": "index.js",
   "eslintConfig": {
     "extends": [

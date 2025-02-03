@@ -4,7 +4,7 @@ const path = require("path");
 module.exports = {
     // exposes tells the module federation the entries to expose. `./plugin` the plugin key for loading.
     exposes: {
-        "./plugin": path.join(__dirname, '..', '..', 'js', 'extension', 'plugins', "Extension")
+        "./plugin": path.join(__dirname, '..', '..', 'js', 'extension', 'plugins', "SaveSessionToLocalStorageExtension")
     },
     // dist of the root of the project
     destination: path.join(__dirname, '..', '..', "dist"),

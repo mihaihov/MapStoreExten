@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import Extension from './extension/plugins/Extension';
+import SaveSessionToLocalStorageExtension from './extension/plugins/SaveSessionToLocalStorageExtension';
 import { name } from '../config';
 
 
 export default {
-    [name]: Extension
+    [name]: SaveSessionToLocalStorageExtension
 };

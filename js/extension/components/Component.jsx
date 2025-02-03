@@ -1,45 +1,33 @@
 import React, { useRef, useState } from "react";
-import './Component.css'
+import '../assets/style.css'
 import Session from "./Session";
 import { useEffect } from "react";
-import DragZone from "@mapstore/components/import/dragZone/DragZone";
-import FileUploadDialog from "./FileUploadDialog";
-import { update } from "@mapstore/actions/geostory";
+import { mapSelector } from "@mapstore/selectors/map";
+import Message from "@mapstore/components/I18N/Message";
 
 
-const Extension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, clearLayers, entireMap, changeMapView }) => {
+const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, clearLayers, entireMap, changeMapView }) => {
 
 
+    //adds/remove offset to the toolbar when extension is enabled.
     useEffect(() => {
-        if (dialogueState) {
-            var toolbar = document.getElementById("navigationBar-container");
-            toolbar.style.marginRight = "500px"
-        } else {
-            var toolbar = document.getElementById("navigationBar-container");
-            toolbar.style.marginRight = "0px"
+        const toolbar = document.getElementById("navigationBar-container");
+        
+        if (toolbar) {
+            const currentMarginRight = parseInt(window.getComputedStyle(toolbar).right, 10) || 0;
+            
+            if (dialogueState) {
+                if (currentMarginRight < 500) {
+                    toolbar.style.marginRight = "500px";
+                }
+            } else {
+                toolbar.style.marginRight = "0px";
+            }
         }
     }, [dialogueState]);
-
-    const [selectedSessions, setSelectedSessions] = useState([]);
-    const handleCheckboxChange = (session) => {
-        setSelectedSessions(prevSelected => {
-            if (prevSelected.some(s => s.sessionName === session.sessionName)) {
-                // If already selected, remove it
-                return prevSelected.filter(s => s.sessionName !== session.sessionName);
-            } else {
-                // Otherwise, add the full session object
-                return [...prevSelected, session];
-            }
-        });
-    };
     
-    
-    const getSelectedSessions = () => {
-        // Filter sessions that are checked
-        const selected = currentItems.filter(session => selectedSessions[session.sessionName]);
-        console.log("Selected Sessions:", selected);
-    };
 
+    // DRAG & DROP FUNCTIONALITY START
     const scrollContainerRef = useRef(null);
     const dragSession = useRef(0);
     const draggedOverSession = useRef(0);
@@ -49,7 +37,6 @@ const Extension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, c
         sessionClone[dragSession.current] = sessionClone[draggedOverSession.current];
         sessionClone[draggedOverSession.current] = temp;
         setLocalStorageSession(sessionClone);
-
     }
 
     const handleDragOver = (e) => {
@@ -65,83 +52,69 @@ const Extension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, c
             scrollContainerRef.current.scrollBy({ top: scrollStep, behavior: "smooth" });
         }
     }
+    // DRAG & DROP FUNCTIONLITY ENDS
 
+    //LINK WITH LOCAL STORAGE OF BROWSER FUNCTIONALITY STARTS
     const getAllSessionsFromLocalStorage = () => {
         return JSON.parse(localStorage.getItem("sessions"));
     }
-
-    const myMapData = currentSession;
-    const [sessionName, setSessionName] = useState('');
     const [localStorageSessions, setLocalStorageSession] = useState(getAllSessionsFromLocalStorage());
-    //paginator
+
+    useEffect(() => {
+        localStorage.setItem("sessions", JSON.stringify(localStorageSessions));
+    }, [localStorageSessions]);
+    //LINK WITH LOCAL STORAGE OF BROWSER FUNCTIONALITY ENDS
+
+    //handles the session name input field
+    const [sessionName, setSessionName] = useState('');
+    const handleInputChange = (e) => {
+        setSessionName(e.target.value)
+    }
+    //PAGINATOR FUNCTIONLITY START
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(3); // Default 5 items per page
+    const [itemsPerPage, setItemsPerPage] = useState(3); 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const [currentItems, setCurrentItems] = useState([]);
+    const totalPages = itemsPerPage === "NONE" ? 1 : Math.ceil((localStorageSessions?.length || 0) / itemsPerPage);
 
     useEffect(() => {
         setCurrentItems(itemsPerPage === "NONE"
         ? localStorageSessions // Show all items when NONE is selected
-        : localStorageSessions.slice(startIndex, startIndex + itemsPerPage))
+        : localStorageSessions?.slice(startIndex, startIndex + itemsPerPage)) || []
     },[localStorageSessions, itemsPerPage, currentPage])
-
-    useEffect(() => {
-        // Update localStorage whenever sessions change
-        localStorage.setItem("sessions", JSON.stringify(localStorageSessions));
-    }, [localStorageSessions]);
-
-
-    const totalPages = itemsPerPage === "NONE" ? 1 : Math.ceil(localStorageSessions.length / itemsPerPage);
 
     const handleItemsPerPageChange = (e) => {
         const value = e.target.value === "NONE" ? "NONE" : parseInt(e.target.value, 10);
         setItemsPerPage(value);
         setCurrentPage(1); // Reset to the first page when changing items per page
     };
+    //PAGINATOR FUNCTIONALITY ENDS
 
-    const handleInputChange = (e) => {
-        setSessionName(e.target.value)
-    }
 
-    const handlePageClick = (event, pageNumber) => {
-        event.preventDefault();
-        setCurrentPage(pageNumber);
-    }
-
-    const exportCurrentSession = () => {
-
-        const json = JSON.stringify(myMapData, null, 2);
-        const blob = new Blob([json], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "data.json"; // File name
-        link.click();
-
-        URL.revokeObjectURL(url);
+    const removeSession = (s) => {
+        const storedSessions = JSON.parse(localStorage.getItem("sessions")) || [];
+        const updatedSessions = storedSessions.filter(session => session.sessionName !== s.sessionName);
+        setLocalStorageSession(updatedSessions);
     };
-
-const removeSession = (s) => {
-    // Get the existing sessions from localStorage
-    const storedSessions = JSON.parse(localStorage.getItem("sessions")) || [];
-
-    // Filter out the session with the given sessionName
-    const updatedSessions = storedSessions.filter(session => session.sessionName !== s.sessionName);
-
-    // Save the updated array back to localStorage
-    localStorage.setItem("sessions", JSON.stringify(updatedSessions));
-    setLocalStorageSession(updatedSessions);
-};
 
 
     const saveSessionToLocalStorage = (e) => {
         e.preventDefault();
-        const dataToSave = { ...currentSession, sessionName: sessionName };
-        setLocalStorageSession(prev => [dataToSave,...prev])
+        const dataToSave = { ...currentSession, sessionName: getUniqueSessionName(sessionName, localStorageSessions) };
+        localStorageSessions?.length > 0 ? setLocalStorageSession(prev => [dataToSave,...prev]) : setLocalStorageSession([dataToSave]);
     }
 
-    const toolbar = document.querySelector('.mapToolbar');
+    //EXPORT MULTIPLE SESSIONS FUNCTIONALITY START
+    const [selectedSessions, setSelectedSessions] = useState([]);
+    const handleCheckboxChange = (session) => {
+        setSelectedSessions(prevSelected => {
+            if (prevSelected.some(s => s.sessionName === session.sessionName)) {
+                return prevSelected.filter(s => s.sessionName !== session.sessionName);
+            } else {
+                return [...prevSelected, session];
+            }
+        });
+    };
 
     const exportMultipleSessions = () => {
         if(!selectedSessions)     return;
@@ -157,13 +130,15 @@ const removeSession = (s) => {
 
         URL.revokeObjectURL(url);
     }
+    //EXPORT MULTIPLE SESSIONS FUNCTIONALITY START
 
-    const [isDialogOpen, setDialogOpen] = useState(false);
+
+    //UPLOAD SESSION(S) FROM LOCAL STORAGE FUNCTIONLITY STARTS
     const [uploadedData, setUploadedData] = useState(null);
     const fileInputRef = useRef(null);
 
     const handleButtonClick = () => {
-        fileInputRef.current.click(); // Opens the file picker
+        fileInputRef.current.click(); // Opens the file uploader
     };
 
     const handleFileChange = (event) => {
@@ -172,8 +147,6 @@ const removeSession = (s) => {
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
-                    // const jsonData = JSON.parse(e.target.result);
-                    // onFileSelect(jsonData); // Send parsed JSON data
                     addSessionsToLocalStorage(JSON.parse(e.target.result));
                 } catch (error) {
                     console.error("Invalid JSON file", error);
@@ -186,73 +159,70 @@ const removeSession = (s) => {
         }
     };
 
-    const addSessionsToLocalStorage = (sessions) => {
-        // Get the existing sessions from localStorage
-        let storedSessions = JSON.parse(localStorage.getItem("sessions")) || [];
-    
-        // Create a Set to track existing session names for fast lookup
+    // Helper function to generate a unique session name
+    const getUniqueSessionName = (name, nameList) => {
+        let storedSessions = nameList || [];
         const existingNames = new Set(storedSessions.map(session => session.sessionName));
-    
-        // Helper function to generate a unique session name
-        const getUniqueSessionName = (name) => {
-            if (!existingNames.has(name)) {
-                existingNames.add(name);
-                return name;
-            }
-            let count = 1;
-            let newName = `${name}_${count}`;
-            while (existingNames.has(newName)) {
-                count++;
-                newName = `${name}_${count}`;
-            }
-            existingNames.add(newName);
-            return newName;
-        };
+
+        if (!existingNames.has(name)) {
+            existingNames.add(name);
+            return name;
+        }
+        let count = 1;
+        let newName = `${name}_${count}`;
+        while (existingNames.has(newName)) {
+            count++;
+            newName = `${name}_${count}`;
+        }
+        existingNames.add(newName);
+        return newName;
+    };
+
+    const addSessionsToLocalStorage = (sessions) => {
+        let storedSessions = localStorageSessions || [];
+        const existingNames = new Set(storedSessions.map(session => session.sessionName));
     
         // Add each session to the storedSessions array with a unique name if necessary
         const updatedSessions = [...storedSessions, ...sessions.map(session => ({
             ...session,
-            sessionName: getUniqueSessionName(session.sessionName)
+            sessionName: getUniqueSessionName(session.sessionName, existingNames)
         }))];
     
         // Save the updated array back to localStorage
-        localStorage.setItem("sessions", JSON.stringify(updatedSessions));
         setLocalStorageSession(updatedSessions);
     };
-    
-    
-    
+    //UPLOAD SESSION(S) FROM LOCAL STORAGE FUNCTIONLITY ENDS
 
-    const handleFileSelect = (jsonData) => {
-        setUploadedData(jsonData); // Store the parsed JSON data
-        setDialogOpen(false); // Close the dialog
-        console.log("Uploaded JSON:", jsonData);
-    };
-
+    //RENAME SESSION FUNCTIONALITY STARTS
     const updateSessionName = (oldName, newName) => {
         setLocalStorageSession((prevSessions) => {
             return prevSessions.map((session) => {
                 if (session.sessionName === oldName) {
-                    return { ...session, sessionName: newName };  // Update immutably
+                    return { ...session, sessionName: newName }; 
                 }
                 return session;
             });
         });
     };
+    //RENAME SESSION FUNCTIONALITY ENDS
+
 
     return (
         (dialogueState && <div className="map-store-panel">
-            <span class="glyphicon glyphicon-save glyphicon globalSaveIcon" onClick = {() => {exportMultipleSessions()}}></span>
-            <h3 class="extensionHeadline">Save current map settings</h3>
+            <span style={{visibility: selectedSessions.length >= 2 ? 'visible' : 'hidden'}} 
+                class="glyphicon glyphicon-save glyphicon globalSaveIcon" onClick = {() => {exportMultipleSessions()}}></span>
+            <h4 class="extensionHeadline">
+                <Message msgId="extension.title" />
+            </h4>
             <form onSubmit={saveSessionToLocalStorage} className="formStyle">
                 <input placeholder="Enter session name" type="text" name="name" onChange={handleInputChange} class="inputName" />
                 <button type="submit" className="saveSessionButton">
                     <span class="glyphicon glyphicon-cloud-download imageButton"></span>
-                    Save session to browser
+                    <Message msgId="extension.saveToLocalStorage" />
                 </button>
             </form>
             <div className={`mainSessionContainer`}>
-                {currentItems.map((item, index) => (
+                {currentItems?.map((item, index) => (
                     <div draggable onDragStart = {() => {dragSession.current = index}}
                                     onDragEnter = {() => {draggedOverSession.current = index}}
                                     onDragEnd = {() => handleSort()}
@@ -276,7 +246,7 @@ const removeSession = (s) => {
             </div>
             <button className="loadSessionFromFileButton" onClick={handleButtonClick}>
                 <span class="glyphicon glyphicon-upload imageButton"></span>
-                Load session from file
+                <Message msgId="loadSessionFromFile"/>
             </button>
             <input
                 type="file"
@@ -292,12 +262,12 @@ const removeSession = (s) => {
             {/* //paginator */}
             <div class="paginatorContainer">
                 <div className="pagination-settings">
-                    <select value={itemsPerPage} onChange={handleItemsPerPageChange} class="dropDownPaginator">
+                    {localStorageSessions?.length > 0 && (<select value={itemsPerPage} onChange={handleItemsPerPageChange} class="dropDownPaginator">
                         <option value="3">3</option>
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="NONE">NONE</option>
-                    </select>
+                    </select>)}
                     {itemsPerPage !== "NONE" && (
                         <nav aria-label="Pagination">
                             <ul className="pagination">
@@ -332,4 +302,4 @@ const removeSession = (s) => {
         ));
 }
 
-export default Extension;
+export default SaveSessionToLocalStorageExtension;
