@@ -1,8 +1,12 @@
-    {
-    "locale": "it-IT",
-    "messages": {
-        "extension": {
-            "message": "Messaggio!"
-        }
+{
+  "locale": "it-IT",
+  "messages": {
+    "extension": {
+      "saveToLocalStorage": "Salva nel deposito locale",
+      "title": "Salva le impostazioni correnti della mappa",
+      "loadSessionFromFile": "Carica la sessione da un file",
+      "enterSessionName": "Inserisci il nome della sessione",
+      "helpText": "Salva la sessione nel deposito locale"
     }
+  }
 }

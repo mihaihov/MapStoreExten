@@ -1,8 +1,7 @@
 import React, { useRef, useState } from "react";
-import '../assets/style.css'
+import '../../../assets/style.css'
 import Session from "./Session";
 import { useEffect } from "react";
-import { mapSelector } from "@mapstore/selectors/map";
 import Message from "@mapstore/components/I18N/Message";
 
 
@@ -56,6 +55,7 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
 
     //LINK WITH LOCAL STORAGE OF BROWSER FUNCTIONALITY STARTS
     const getAllSessionsFromLocalStorage = () => {
+        console.log("THIS IS A MESSAGE FROM THE NEW EXTENSION")
         return JSON.parse(localStorage.getItem("sessions"));
     }
     const [localStorageSessions, setLocalStorageSession] = useState(getAllSessionsFromLocalStorage());

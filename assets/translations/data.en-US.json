@@ -1,8 +1,12 @@
-    {
-    "locale": "en-US",
-    "messages": {
-        "extension": {
-            "message": "Message!"
-        }
+{
+  "locale": "en-US",
+  "messages": {
+    "extension": {
+      "saveToLocalStorage": "Save to local storage",
+      "title": "Save current map settings",
+      "loadSessionFromFile": "Load session from file",
+      "enterSessionName": "Enter session name",
+      "helpText": "Save session to local storage"
     }
+  }
 }

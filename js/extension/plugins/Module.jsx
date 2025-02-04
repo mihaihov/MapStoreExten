@@ -1,14 +1,11 @@
 import {connect} from "react-redux";
 import { name } from "../../../config";
 import SaveSessionToLocalStorageExtension from "../components/Component"
-import '../assets/style.css'
 import {changeMapView, changeZoomLevel } from "@mapstore/actions/map";
 import { addLayer, clearLayers } from "@mapstore/actions/layers";
 import React from 'react';
 import Message from "@mapstore/components/I18N/HTML";
-
-
-
+import '../../../assets/style.css';
 
 
 export default {
@@ -67,6 +64,7 @@ export default {
                 }
             },
             priority: 1,
+            alwaysVisible: true,
             doNotHide: true
         },
     }
