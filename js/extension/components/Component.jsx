@@ -216,7 +216,7 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
             </h4>
             <form onSubmit={saveSessionToLocalStorage} className="formStyle">
                 <input placeholder="Enter session name" type="text" name="name" onChange={handleInputChange} class="inputName" />
-                <button type="submit" className="saveSessionButton">
+                <button type="submit" className="btn-primary square-button btn" style={{width: '200px', marginTop: '5px', margin: 0, padding: '7px'}}>
                     <span class="glyphicon glyphicon-cloud-download imageButton"></span>
                     <Message msgId="extension.saveToLocalStorage" />
                 </button>
