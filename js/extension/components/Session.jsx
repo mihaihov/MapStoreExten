@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import '../../../assets/style.less'
+import '../../../assets/style.css'
 
 const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMapView, removeSession, updateSessionName}) => {
 

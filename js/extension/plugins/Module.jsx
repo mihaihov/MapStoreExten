@@ -5,7 +5,7 @@ import {changeMapView, changeZoomLevel } from "@mapstore/actions/map";
 import { addLayer, clearLayers } from "@mapstore/actions/layers";
 import React from 'react';
 import Message from "@mapstore/components/I18N/HTML";
-import '../../../assets/style.less';
+import '../../../assets/style.css';
 
 
 export default {

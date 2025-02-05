@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import '../../../assets/style.less'
+import '../../../assets/style.css'
 import Session from "./Session";
 import { useEffect } from "react";
 import Message from "@mapstore/components/I18N/Message";
@@ -208,11 +208,13 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
     return (
         (dialogueState && <div className="map-store-panel">
             <div class="headerStyle">
-                <button style={{fontSize:'30px', backgroundColor: 'transparent', border: 'none'}} title="Close Dialogue">
-                    <span class="glyphicon glyphicon-remove-circle" onClick={() => { closeDialogue() }}></span>
+                <span class="glyphicon glyphicon-folder-open" style={{color: 'white', fontSize:'25px'}}></span>
+                <h1 class="pluginTitle">Manage sessions in local storage</h1>
+                <button style={{fontSize:'25px', backgroundColor: 'transparent', border: 'none', color: 'white'}} title="Close Dialogue">
+                    <span class="glyphicon glyphicon-1-close" onClick={() => { closeDialogue() }}></span>
                 </button>
             </div>
-
+            
             <h4 class="extensionHeadline">
                 <Message msgId="extension.title" />
             </h4>

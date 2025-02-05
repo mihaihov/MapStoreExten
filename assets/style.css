@@ -1,4 +1,3 @@
-@import '../MapStore2/web/client/themes/default/ms-variables.less';
 
 #SAMPLE_EXTENSION {
     background-color: rgba(255, 255, 255, .9);
@@ -21,7 +20,7 @@
     height: 100vh;
     width: 500px;
     min-width: 500px;
-    background-color: @ms-main-bg;
+    background-color: white !important;
     z-index: 1000;
     /* Ensures it stays above other elements */
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
@@ -33,7 +32,6 @@
 
 .titleStyle {
     text-align: center;
-    @ms-info: @ms-primary-contrast;
     justify-content: center;
 }
 
@@ -48,7 +46,7 @@
     /* rounded-md */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     /* shadow-lg */
-    background-color: @ms-main-bg;
+    background-color: white !important;
     /* bg-blue-100 */
     position: relative;
     width: 100%;
@@ -58,7 +56,7 @@
 h1.title {
     font-size: 0.875rem;
     /* text-sm */
-    color: @ms-main-variant-color;
+    color: #333333;
     /* text-black */
     margin-left: 10px;
     /* ml-10 */
@@ -150,15 +148,29 @@ h1.title {
     padding-right:10px;
 }
 
+.pluginTitle
+{
+    color: white !important;
+    font-size: large;
+}
+
+.extensionHeadline
+{
+    color: black !important;
+    margin-top: 30px !important;
+}
 
 .headerStyle 
 {
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     width: 100%;
     justify-content: space-between;
     padding-top: 10px;
-    background-color: @ms-primary;
+    background-color: #078aa3 !important;
+    padding-left:10px;
+    padding-right:10px;
+    align-items: center;
 }
 
 .paginatorContainer {
@@ -185,7 +197,7 @@ h1.title {
 .loadSessionFromFileButton {
     padding: 10px 15px;
     margin-top: 20px;
-    background-color: @ms-main-bg;
+    background-color: white !important;
     border: 2px solid gainsboro;
     border-radius: 6px;
     flex-direction: row;
@@ -198,5 +210,5 @@ h1.title {
 }
 
 .loadSessionFromFileButton:hover {
-    border-color: @ms-main-hover-color;
+    border-color: #333333 !important
 }
