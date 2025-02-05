@@ -13,5 +13,3 @@ import { name } from '../config';
 export default {
     [name]: SaveSessionToLocalStorageExtension
 };
-
-console.log("THIS IS A MESSAGE FROM THE NEW EXTENSION")

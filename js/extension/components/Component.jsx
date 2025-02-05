@@ -1,12 +1,11 @@
 import React, { useRef, useState } from "react";
-import '../../../assets/style.css'
+import '../../../assets/style.less'
 import Session from "./Session";
 import { useEffect } from "react";
 import Message from "@mapstore/components/I18N/Message";
 
 
-const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, clearLayers, entireMap, changeMapView }) => {
-
+const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, clearLayers, entireMap, changeMapView, closeDialogue }) => {
 
     //adds/remove offset to the toolbar when extension is enabled.
     useEffect(() => {
@@ -55,7 +54,6 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
 
     //LINK WITH LOCAL STORAGE OF BROWSER FUNCTIONALITY STARTS
     const getAllSessionsFromLocalStorage = () => {
-        console.log("THIS IS A MESSAGE FROM THE NEW EXTENSION")
         return JSON.parse(localStorage.getItem("sessions"));
     }
     const [localStorageSessions, setLocalStorageSession] = useState(getAllSessionsFromLocalStorage());
@@ -162,7 +160,7 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
     // Helper function to generate a unique session name
     const getUniqueSessionName = (name, nameList) => {
         let storedSessions = nameList || [];
-        const existingNames = new Set(storedSessions.map(session => session.sessionName));
+        const existingNames = new Set(storedSessions);
 
         if (!existingNames.has(name)) {
             existingNames.add(name);
@@ -209,18 +207,28 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
 
     return (
         (dialogueState && <div className="map-store-panel">
-            <span style={{visibility: selectedSessions.length >= 2 ? 'visible' : 'hidden'}} 
-                class="glyphicon glyphicon-save glyphicon globalSaveIcon" onClick = {() => {exportMultipleSessions()}}></span>
+            <div class="headerStyle">
+                <button style={{fontSize:'30px', backgroundColor: 'transparent', border: 'none'}} title="Close Dialogue">
+                    <span class="glyphicon glyphicon-remove-circle" onClick={() => { closeDialogue() }}></span>
+                </button>
+            </div>
+
             <h4 class="extensionHeadline">
                 <Message msgId="extension.title" />
             </h4>
             <form onSubmit={saveSessionToLocalStorage} className="formStyle">
                 <input placeholder="Enter session name" type="text" name="name" onChange={handleInputChange} class="inputName" />
-                <button type="submit" className="btn-primary square-button btn" style={{width: '200px', marginTop: '5px', margin: 0, padding: '7px'}}>
-                    <span class="glyphicon glyphicon-cloud-download imageButton"></span>
+                <button type="submit" className="saveSessionButton btn-primary square-button btn">
+                    <span class="glyphicon glyphicon-cloud-download" style={{marginRight: '6px'}}></span>
                     <Message msgId="extension.saveToLocalStorage" />
                 </button>
             </form>
+            <div style={{display: 'flex', flexDirection: 'row', width: '100%', paddingLeft: '10px', paddingRight: '10px'}}>
+                <button title="Export selected sessions" style={{paddingTop: '0px', paddingBottom: '0px', visibility: selectedSessions.length >= 2 ? 'visible' : 'hidden', fontSize:'30px', backgroundColor: 'transparent', border: 'none' }}  onClick={() => { exportMultipleSessions() }}>
+                    <span class="glyphicon glyphicon-save glyphicon"> </span>
+                </button>
+            </div>
+
             <div className={`mainSessionContainer`}>
                 {currentItems?.map((item, index) => (
                     <div draggable onDragStart = {() => {dragSession.current = index}}
@@ -245,8 +253,8 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
                 ))}
             </div>
             <button className="loadSessionFromFileButton" onClick={handleButtonClick}>
-                <span class="glyphicon glyphicon-upload imageButton"></span>
-                <Message msgId="loadSessionFromFile"/>
+                <span class="glyphicon glyphicon-upload"></span>
+                <Message msgId="extension.loadSessionFromFile"/>
             </button>
             <input
                 type="file"

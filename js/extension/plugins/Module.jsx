@@ -5,7 +5,7 @@ import {changeMapView, changeZoomLevel } from "@mapstore/actions/map";
 import { addLayer, clearLayers } from "@mapstore/actions/layers";
 import React from 'react';
 import Message from "@mapstore/components/I18N/HTML";
-import '../../../assets/style.css';
+import '../../../assets/style.less';
 
 
 export default {
@@ -21,7 +21,11 @@ export default {
         }, entireMap: state,
         dialogueState: state.toggleDialogue.dialogueState
     }), {
-        changeZoomLevel, addLayer, clearLayers,changeMapView
+        changeZoomLevel, addLayer, clearLayers,changeMapView, closeDialogue : () => {
+            return {
+                type: 'CLOSE_DIALOGUE'
+            }
+        }
     })(SaveSessionToLocalStorageExtension),
     reducers: {
         toggleDialogue : (state = {dialogueState: false}, action) => {
@@ -29,7 +33,11 @@ export default {
             {
                 return {dialogueState : !state.dialogueState}
             }
-            else return state
+            else if(action.type === 'CLOSE_DIALOGUE')
+            {
+                return {dialogueState : false}
+            }
+            return state
         },
         applySession: (state = {}, action) => {
             if(action.type === 'APPLY_SESSION')

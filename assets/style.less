@@ -1,0 +1,202 @@
+@import '../MapStore2/web/client/themes/default/ms-variables.less';
+
+#SAMPLE_EXTENSION {
+    background-color: rgba(255, 255, 255, .9);
+    border-radius: 10px;
+    max-width: 550px;
+    padding: 10px;
+    margin: 10px;
+    position: absolute;
+    top: 50px;
+    z-index: 1000;
+}
+
+
+.map-store-panel {
+    position: relative;
+    top: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: 0;
+    height: 100vh;
+    width: 500px;
+    min-width: 500px;
+    background-color: @ms-main-bg;
+    z-index: 1000;
+    /* Ensures it stays above other elements */
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+    /* Adds shadow for depth */
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+}
+
+.titleStyle {
+    text-align: center;
+    @ms-info: @ms-primary-contrast;
+    justify-content: center;
+}
+
+.sessionContainer {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid #D1D5DB;
+    /* Equivalent to border-gray-400 */
+    padding: 10px 4px;
+    /* py-3 px-2 */
+    border-radius: 4px;
+    /* rounded-md */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* shadow-lg */
+    background-color: @ms-main-bg;
+    /* bg-blue-100 */
+    position: relative;
+    width: 100%;
+    justify-content: space-between;
+}
+
+h1.title {
+    font-size: 0.875rem;
+    /* text-sm */
+    color: @ms-main-variant-color;
+    /* text-black */
+    margin-left: 10px;
+    /* ml-10 */
+    margin-top: 10px;
+    margin-right: 10px;
+    width: 100%;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    margin-right: 10px;
+    /* mr-10 */
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    /* gap-4 */
+}
+
+.icon-button i {
+    font-size: 1.5rem;
+    /* text-2xl for the check icon */
+}
+
+.globalSaveIcon {
+    font-size: 30px;
+    margin-left: 15px;
+    left: 0;
+    align-self: flex-start;
+}
+
+.inputName {
+    font-size: medium;
+    margin-top: 5px;
+    width: 450px;
+    text-align: center;
+    padding: 6px;
+    border: 1px solid gainsboro;
+    border-radius: 6px;
+}
+
+.renameSession {
+    font-size: medium;
+    width: 380px;
+    text-align: center;
+    border: 1px solid gainsboro;
+    border-radius: 6px;
+}
+
+.formStyle {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+.renameSessionOk {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    justify-content: center;
+    align-items: center;
+    margin-left: 8px;
+}
+
+.renameSessionForm {
+    flex-direction: row;
+    gap: 2px;
+    display: flex;
+    align-items: center;
+}
+
+.saveSessionButton {
+    width: auto !important;
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+}
+
+.mainSessionContainer {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    justify-content: start;
+    padding-left: 10px;
+    padding-right:10px;
+}
+
+
+.headerStyle 
+{
+    display: flex;
+    flex-direction: row-reverse;
+    width: 100%;
+    justify-content: space-between;
+    padding-top: 10px;
+    background-color: @ms-primary;
+}
+
+.paginatorContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column-reverse;
+    margin-bottom: 30px;
+}
+
+.pagination-settings
+{
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.dropDownPaginator {
+    border-radius: 4px;
+}
+
+.loadSessionFromFileButton {
+    padding: 10px 15px;
+    margin-top: 20px;
+    background-color: @ms-main-bg;
+    border: 2px solid gainsboro;
+    border-radius: 6px;
+    flex-direction: row;
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.loadSessionFromFileButton:hover {
+    border-color: @ms-main-hover-color;
+}
