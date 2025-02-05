@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import '../../../assets/style.css'
 
@@ -33,14 +33,14 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
 
     const[isEditingName, setIsEditingName] = useState(false);
 
-    const extractAnnotation = (layers, annotations) => {
-            if (!layers || !Array.isArray(layers) || !annotations?.featureId) {
+    const extractAnnotation = (layers) => {
+            if (!layers || !Array.isArray(layers)) {
                 return [];
             }
         
-            const featureId = annotations.featureId.split(/[-_]/).slice(1).join("-");
+            //const featureId = annotations.featureId.split(/[-_]/).slice(1).join("-");
         
-            return layers.filter(layer => layer.id.endsWith(featureId) && layer.id.startsWith("annotation"));     
+            return layers.filter(layer => layer.id.startsWith("annotation"));     
     }
 
     const extractLayers = (layers, anno) => {
@@ -48,7 +48,7 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
             return [];
         }
     
-        const annotations = extractAnnotation(layers, anno);
+        const annotations = extractAnnotation(layers);
         const annotationIds = new Set(annotations.map(layer => layer.id));
     
         return layers.filter(layer => !annotationIds.has(layer.id));
@@ -72,11 +72,24 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
             existingLayer.id.split("__")[0] === layerIdTrimmed
         ) || false;
     };
+
+    const doesGroupExistsOnCurrentMap = (group, sessionGroups) => {
+        if (!group || typeof group.id === "undefined") return false;
+        if (!entireMap || !Array.isArray(sessionGroups)) return false;
+    
+        const layerIdTrimmed = group.id;
+    
+        return sessionGroups.flat().find(existingGroup => 
+            existingGroup.id === layerIdTrimmed
+        ) || false;
+    };
     
 
     const ApplySessionToMap = () => {
-        if(compareMapToSession(extractLayers(session.layers, session.annotations), extractLayers(entireMap.layers.flat, entireMap.annotations))){
-        //If map the same as session being loaded, only load annotations (if not already exists),the visibility and opacity according to session's layers.
+        const sessionLayers = extractLayers(session.layers, session.annotations);
+        const mapLayers = extractLayers(entireMap.layers.flat, entireMap.annotations);
+        if(compareMapToSession(sessionLayers, mapLayers)){
+        //If map is the same as session being loaded, only load annotations (if not already exists),the visibility and opacity according to session's layers.
         //else, change zoom and extent and annotations (if not alread existing.)
 
             //adjusts the opacity and visibility for common layers
@@ -86,35 +99,36 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
                     entireMap.layers.flat[i].opacity = session.layers[i].opacity || 1;
                     entireMap.layers.flat[i].visibility = session.layers[i].visibility;
                 }
-            }
-            console.log(entireMap.layers.flat);
-            console.log(session.layers);
-
-            // adds all annotations that do not exist.
-            const sessionAnnotations = extractAnnotation(session.layers, session.annotations);
-            const annotationsToLoad = [];
-            for (let i = 0; i < sessionAnnotations.length; i++) {
-                if (!doesLayerExistOnCurrentMap(sessionAnnotations[i], entireMap.layers.flat)) {
-                    annotationsToLoad.push(sessionAnnotations[i]);
-                }
-            }
-            loadLayers(annotationsToLoad);
-            changeMapView(session.center, session.zoom)            
+            }           
         }
-        else
+
+        //activate/deactivate groups.
+        if(entireMap.layers.groups.length >= 1)
         {
-            const sessionAnnotations = extractAnnotation(session.layers, session.annotations);
-            const annotationsToLoad = [];
-            for(let i = 0; i<sessionAnnotations.length;i++)
-            {
-                if(!doesLayerExistOnCurrentMap(sessionAnnotations[i], entireMap.layers.flat[i])) {
-                    annotationsToLoad.push(sessionAnnotations[i])
+            for (let i = 0; i< entireMap.layers.groups[0].nodes.length  ; i++)
+                {
+                    const mapGroup = doesGroupExistsOnCurrentMap(entireMap.layers.groups[0].nodes[i], session.groups);
+                    if(mapGroup)
+                    {
+                        entireMap.layers.groups[0].nodes[i].visibility = mapGroup.visibility;
+                    }
                 }
-            }
-            loadLayers(annotationsToLoad);
-            changeMapView(session.center, session.zoom)
-
         }
+        // adds all annotations that do not exist.
+        const sessionAnnotations = extractAnnotation(session.layers);
+        const annotationsToLoad = [];
+        for (let i = 0; i < sessionAnnotations.length; i++) {
+            if (!doesLayerExistOnCurrentMap(sessionAnnotations[i], entireMap.layers.flat)) {
+                const { group, ...newObject } = sessionAnnotations[i];
+                annotationsToLoad.push(newObject);
+            }
+        }
+        loadLayers(annotationsToLoad);
+        
+
+        //enable groups. adjust groups visibility.
+
+        changeMapView(session.center, session.zoom) 
     }
 
 

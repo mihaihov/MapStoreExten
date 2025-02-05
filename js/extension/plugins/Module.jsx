@@ -13,11 +13,12 @@ export default {
     component: connect(state => ({
         currentSession :{
             layers: state.layers.flat,
+            groups: state.layers.groups && state.layers.groups.length  ? state.layers.groups[0].nodes : [],
             annotations: state.annotations,
-            projection: state.mapInitialConfig.projection,
-            zoom: state.mapInitialConfig.zoom,
-            maxExtent: state.mapInitialConfig.maxExtent,
-            center: state.mapInitialConfig.center
+            projection: state.map?.present?.projection,
+            zoom: state.map?.present?.zoom,
+            maxExtent: state.map?.present?.maxExtent,
+            center: state.map?.present?.center
         }, entireMap: state,
         dialogueState: state.toggleDialogue.dialogueState
     }), {

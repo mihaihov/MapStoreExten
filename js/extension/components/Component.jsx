@@ -9,6 +9,7 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
 
     //adds/remove offset to the toolbar when extension is enabled.
     useEffect(() => {
+        console.log(entireMap);
         const toolbar = document.getElementById("navigationBar-container");
         
         if (toolbar) {
@@ -73,16 +74,16 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
     const [itemsPerPage, setItemsPerPage] = useState(3); 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const [currentItems, setCurrentItems] = useState([]);
-    const totalPages = itemsPerPage === "NONE" ? 1 : Math.ceil((localStorageSessions?.length || 0) / itemsPerPage);
+    const totalPages = itemsPerPage === "All" ? 1 : Math.ceil((localStorageSessions?.length || 0) / itemsPerPage);
 
     useEffect(() => {
-        setCurrentItems(itemsPerPage === "NONE"
-        ? localStorageSessions // Show all items when NONE is selected
+        setCurrentItems(itemsPerPage === "All"
+        ? localStorageSessions // Show all items when All is selected
         : localStorageSessions?.slice(startIndex, startIndex + itemsPerPage)) || []
     },[localStorageSessions, itemsPerPage, currentPage])
 
     const handleItemsPerPageChange = (e) => {
-        const value = e.target.value === "NONE" ? "NONE" : parseInt(e.target.value, 10);
+        const value = e.target.value === "All" ? "All" : parseInt(e.target.value, 10);
         setItemsPerPage(value);
         setCurrentPage(1); // Reset to the first page when changing items per page
     };
@@ -98,7 +99,7 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
 
     const saveSessionToLocalStorage = (e) => {
         e.preventDefault();
-        const dataToSave = { ...currentSession, sessionName: getUniqueSessionName(sessionName, localStorageSessions) };
+        const dataToSave = { ...currentSession, sessionName: getUniqueSessionName(sessionName, localStorageSessions.map(session => session.sessionName)) };
         localStorageSessions?.length > 0 ? setLocalStorageSession(prev => [dataToSave,...prev]) : setLocalStorageSession([dataToSave]);
     }
 
@@ -214,7 +215,7 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
                     <span class="glyphicon glyphicon-1-close" onClick={() => { closeDialogue() }}></span>
                 </button>
             </div>
-            
+
             <h4 class="extensionHeadline">
                 <Message msgId="extension.title" />
             </h4>
@@ -276,9 +277,9 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
                         <option value="3">3</option>
                         <option value="5">5</option>
                         <option value="10">10</option>
-                        <option value="NONE">NONE</option>
+                        <option value="All">All</option>
                     </select>)}
-                    {itemsPerPage !== "NONE" && (
+                    {itemsPerPage !== "All" && (
                         <nav aria-label="Pagination">
                             <ul className="pagination">
                                 <li className="page-item">
