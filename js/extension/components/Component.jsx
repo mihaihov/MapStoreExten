@@ -27,29 +27,32 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
     
 
     // DRAG & DROP FUNCTIONALITY START
-    const scrollContainerRef = useRef(null);
-    const dragSession = useRef(0);
-    const draggedOverSession = useRef(0);
-    const handleSort = () => {
+    const [dragSession, setDragSession] = useState(null);
+    const [draggedOverSession, setDraggedOverSession] = useState(null);
+    const handleSort = (e) => {
+        e.preventDefault();
+
         const sessionClone = [...localStorageSessions];
-        const temp = sessionClone[dragSession.current];
-        sessionClone[dragSession.current] = sessionClone[draggedOverSession.current];
-        sessionClone[draggedOverSession.current] = temp;
+        const temp = sessionClone[dragSession];
+        sessionClone[dragSession] = sessionClone[draggedOverSession];
+        sessionClone[draggedOverSession] = temp;
         setLocalStorageSession(sessionClone);
+
+        setDragSession(null);
+        setDraggedOverSession(null);
     }
 
     const handleDragOver = (e) => {
         e.preventDefault();
-        if (!scrollContainerRef.current) return;
 
-        const { top, bottom, height } = scrollContainerRef.current.getBoundingClientRect();
-        const scrollTreshold = 50;
-        const scrollStep = 5;
-        if (e.clientY < top + scrollTreshold) {
-            scrollContainerRef.current.scrollBy({ top: -scrollStep, behavior: "smooth" });
-        } else if (e.clientY > bottom - scrollTreshold) {
-            scrollContainerRef.current.scrollBy({ top: scrollStep, behavior: "smooth" });
-        }
+        // const { top, bottom, height } = scrollContainerRef.current.getBoundingClientRect();
+        // const scrollTreshold = 50;
+        // const scrollStep = 5;
+        // if (e.clientY < top + scrollTreshold) {
+        //     scrollContainerRef.current.scrollBy({ top: -scrollStep, behavior: "smooth" });
+        // } else if (e.clientY > bottom - scrollTreshold) {
+        //     scrollContainerRef.current.scrollBy({ top: scrollStep, behavior: "smooth" });
+        // }
     }
     // DRAG & DROP FUNCTIONLITY ENDS
 
@@ -234,11 +237,12 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
 
             <div className={`mainSessionContainer`}>
                 {currentItems?.map((item, index) => (
-                    <div draggable onDragStart = {() => {dragSession.current = index}}
-                                    onDragEnter = {() => {draggedOverSession.current = index}}
-                                    onDragEnd = {() => handleSort()}
+                    <div draggable key={index} onDragStart = {(e) => {setDragSession(index);     e.dataTransfer.effectAllowed = "move";
+                        e.dataTransfer.setData("text/plain", index);}}
+                                    onDragEnter = {() => {setDraggedOverSession(index);}}
+                                    onDragEnd = {(e) => handleSort(e)}
                                     onDragOver={(e) => {handleDragOver(e)}}
-                                    ref={scrollContainerRef}>
+                                   >
                         <Session
                             checked={selectedSessions.some(s => s.sessionName === item.sessionName)}
                             onCheckChange={ () => handleCheckboxChange(item)}

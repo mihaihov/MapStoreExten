@@ -21,7 +21,7 @@
     width: 500px;
     min-width: 500px;
     background-color: white !important;
-    z-index: 1000;
+    z-index: 2000;
     /* Ensures it stays above other elements */
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
     /* Adds shadow for depth */
