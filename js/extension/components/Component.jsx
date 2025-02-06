@@ -44,15 +44,16 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
 
     const handleDragOver = (e) => {
         e.preventDefault();
+        e.stopPropagation();
 
-        // const { top, bottom, height } = scrollContainerRef.current.getBoundingClientRect();
-        // const scrollTreshold = 50;
-        // const scrollStep = 5;
-        // if (e.clientY < top + scrollTreshold) {
-        //     scrollContainerRef.current.scrollBy({ top: -scrollStep, behavior: "smooth" });
-        // } else if (e.clientY > bottom - scrollTreshold) {
-        //     scrollContainerRef.current.scrollBy({ top: scrollStep, behavior: "smooth" });
-        // }
+        const { top, bottom, height } = scrollContainerRef.current.getBoundingClientRect();
+        const scrollTreshold = 50;
+        const scrollStep = 5;
+        if (e.clientY < top + scrollTreshold) {
+            scrollContainerRef.current.scrollBy({ top: -scrollStep, behavior: "smooth" });
+        } else if (e.clientY > bottom - scrollTreshold) {
+            scrollContainerRef.current.scrollBy({ top: scrollStep, behavior: "smooth" });
+        }
     }
     // DRAG & DROP FUNCTIONLITY ENDS
 
@@ -241,7 +242,7 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
                         e.dataTransfer.setData("text/plain", index);}}
                                     onDragEnter = {() => {setDraggedOverSession(index);}}
                                     onDragEnd = {(e) => handleSort(e)}
-                                    onDragOver={(e) => {handleDragOver(e)}}
+                                    onDragOver={(e) => handleDragOver(e)}
                                    >
                         <Session
                             checked={selectedSessions.some(s => s.sessionName === item.sessionName)}
