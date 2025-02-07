@@ -9,7 +9,6 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
 
     //adds/remove offset to the toolbar when extension is enabled.
     useEffect(() => {
-        console.log(entireMap);
         const toolbar = document.getElementById("navigationBar-container");
         
         if (toolbar) {
@@ -81,9 +80,14 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
     const totalPages = itemsPerPage === "All" ? 1 : Math.ceil((localStorageSessions?.length || 0) / itemsPerPage);
 
     useEffect(() => {
+        console.log("currentPage "+ currentPage);
+        console.log("startIndex "+ startIndex);
+        console.log("currentItems ");
+        
         setCurrentItems(itemsPerPage === "All"
         ? localStorageSessions // Show all items when All is selected
         : localStorageSessions?.slice(startIndex, startIndex + itemsPerPage)) || []
+        console.log(currentItems);
     },[localStorageSessions, itemsPerPage, currentPage])
 
     const handleItemsPerPageChange = (e) => {
@@ -212,26 +216,30 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
 
     return (
         (dialogueState && <div className="map-store-panel">
-            <div class="headerStyle">
-                <span class="glyphicon glyphicon-folder-open" style={{color: 'white', fontSize:'25px'}}></span>
-                <h1 class="pluginTitle">Manage sessions in local storage</h1>
-                <button style={{fontSize:'25px', backgroundColor: 'transparent', border: 'none', color: 'white'}} title="Close Dialogue">
-                    <span class="glyphicon glyphicon-1-close" onClick={() => { closeDialogue() }}></span>
-                </button>
+            <div className="ms-header ms-primary bg-primary" style={{width: '100%'}}>
+                <div class="headerStyle">
+                    <div className="square-button bg-primary" style={{ display: 'flex' }}>
+                        <span class="glyphicon glyphicon-folder-open"></span>
+                    </div>
+                    <h4><span class = "pluginTitle">Manage sessions in local storage</span></h4>
+                    <button type="button" class="square-button ms-close btn btn-primary closeDialogueButton" title="Close Dialogue">
+                        <span class="glyphicon glyphicon-1-close" onClick={() => { closeDialogue() }}></span>
+                    </button>
+                </div>
             </div>
 
             <h4 class="extensionHeadline">
                 <Message msgId="extension.title" />
             </h4>
-            <form onSubmit={saveSessionToLocalStorage} className="formStyle">
-                <input placeholder="Enter session name" type="text" name="name" onChange={handleInputChange} class="inputName" />
+            <form onSubmit={saveSessionToLocalStorage} className="formStyle form-group">
+                <input placeholder="Enter session name" type="text" name="name" onChange={handleInputChange} class="inputName form-control" />
                 <button type="submit" className="saveSessionButton btn-primary square-button btn">
                     <span class="glyphicon glyphicon-cloud-download" style={{marginRight: '6px'}}></span>
                     <Message msgId="extension.saveToLocalStorage" />
                 </button>
             </form>
             <div style={{display: 'flex', flexDirection: 'row', width: '100%', paddingLeft: '10px', paddingRight: '10px'}}>
-                <button title="Export selected sessions" style={{paddingTop: '0px', paddingBottom: '0px', visibility: selectedSessions.length >= 2 ? 'visible' : 'hidden', fontSize:'30px', backgroundColor: 'transparent', border: 'none' }}  onClick={() => { exportMultipleSessions() }}>
+                <button class="btn" title="Export selected sessions" style={{paddingTop: '0px', paddingBottom: '0px', visibility: selectedSessions.length >= 2 ? 'visible' : 'hidden', fontSize:'30px', backgroundColor: 'transparent', border: 'none' }}  onClick={() => { exportMultipleSessions() }}>
                     <span class="glyphicon glyphicon-save glyphicon"> </span>
                 </button>
             </div>

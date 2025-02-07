@@ -11,7 +11,7 @@
 }
 
 
-.map-store-panel {
+.map-store-panel{
     position: relative;
     top: 0;
     right: 0;
@@ -20,7 +20,7 @@
     height: 100vh;
     width: 500px;
     min-width: 500px;
-    background-color: white !important;
+    background-color: inherit;
     z-index: 2000;
     /* Ensures it stays above other elements */
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
@@ -46,23 +46,21 @@
     /* rounded-md */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     /* shadow-lg */
-    background-color: white !important;
     /* bg-blue-100 */
     position: relative;
     width: 100%;
     justify-content: space-between;
 }
 
-h1.title {
-    font-size: 0.875rem;
+title {
     /* text-sm */
-    color: #333333;
+    color: var(--ms-main-color, #333333);
     /* text-black */
     margin-left: 10px;
     /* ml-10 */
-    margin-top: 10px;
-    margin-right: 10px;
-    width: 100%;
+    margin-top: 10px !important;
+    margin-right: 10px !important;
+    width: 100% !important;
 }
 
 .button-container {
@@ -77,6 +75,7 @@ h1.title {
 }
 
 .icon-button i {
+    color: inherit;
     font-size: 1.5rem;
     /* text-2xl for the check icon */
 }
@@ -89,20 +88,17 @@ h1.title {
 }
 
 .inputName {
-    font-size: medium;
-    margin-top: 5px;
-    width: 450px;
-    text-align: center;
-    padding: 6px;
-    border: 1px solid gainsboro;
-    border-radius: 6px;
+    margin-top: 5px !important;
+    width: 450px !important;
+    text-align: center !important;
+    padding: 6px !important;
+    border: 1px solid gainsboro !important;
+    border-radius: 6px !important;
 }
 
 .renameSession {
-    font-size: medium;
     width: 380px;
     text-align: center;
-    border: 1px solid gainsboro;
     border-radius: 6px;
 }
 
@@ -115,12 +111,12 @@ h1.title {
 }
 
 .renameSessionOk {
-    width: 30px;
-    height: 30px;
-    border-radius: 6px;
-    justify-content: center;
-    align-items: center;
-    margin-left: 8px;
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 6px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-left: 8px !important;
 }
 
 .renameSessionForm {
@@ -150,13 +146,11 @@ h1.title {
 
 .pluginTitle
 {
-    color: white !important;
-    font-size: large;
+    color: var(--ms-primary-contrast, #ffffff);
 }
 
 .extensionHeadline
 {
-    color: black !important;
     margin-top: 30px !important;
 }
 
@@ -166,11 +160,12 @@ h1.title {
     flex-direction: row;
     width: 100%;
     justify-content: space-between;
-    padding-top: 10px;
-    background-color: #078aa3 !important;
-    padding-left:10px;
-    padding-right:10px;
     align-items: center;
+}
+
+.closeDialogueButton {
+    border: none !important;
+    transition: 0.3s;
 }
 
 .paginatorContainer {
@@ -197,7 +192,7 @@ h1.title {
 .loadSessionFromFileButton {
     padding: 10px 15px;
     margin-top: 20px;
-    background-color: white !important;
+    color: var(--ms-button-primary-color, #333333);
     border: 2px solid gainsboro;
     border-radius: 6px;
     flex-direction: row;

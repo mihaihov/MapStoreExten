@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useImperativeHandle } from 'react'
 import { useState } from 'react'
 import '../../../assets/style.css'
 
@@ -167,20 +167,20 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
                     checked={checked}
                     onChange={onCheckChange}
                 />
-                <h1 class="title" style={{display: isEditingName ? 'none' : 'inline-flex'}}>{session.sessionName.replace("localstorageSession_","")}</h1>
+                <h5 class="title" style={{display: isEditingName ? 'none' : 'inline-flex', width: '100%', marginLeft: '10px', marginRight: '10px'}}>{session.sessionName.replace("localstorageSession_","")}</h5>
                 <div class="button-container" style={{display: isEditingName ? 'none' : 'inline-flex'}}>
-                    <button className="icon-button" onClick = {() => {ApplySessionToMap()}}><span class="glyphicon glyphicon-saved"></span></button>
-                    <button className="icon-button" onClick = {() => {setIsEditingName(!isEditingName)}}><span class="glyphicon glyphicon-edit"></span></button>
-                    <button className="icon-button" onClick={() => {exportSelectedSession()}}><span class="glyphicon glyphicon-save"></span></button>
-                    <button className="icon-button" onClick={()=> {removeSession(session)}}><span class="glyphicon glyphicon-remove"></span></button>
+                    <button className="icon-button  btn-primary" onClick = {() => {ApplySessionToMap()}}><span class="glyphicon glyphicon-saved"></span></button>
+                    <button className="icon-button  btn-primary" onClick = {() => {setIsEditingName(!isEditingName)}}><span class="glyphicon glyphicon-edit"></span></button>
+                    <button className="icon-button  btn-primary" onClick={() => {exportSelectedSession()}}><span class="glyphicon glyphicon-save"></span></button>
+                    <button className="icon-button  btn-primary" onClick={()=> {removeSession(session)}}><span class="glyphicon glyphicon-remove"></span></button>
                 </div>
             { isEditingName && (
                 <form onSubmit={handleRenameSubmit} className="renameSessionForm" disabled={true}>
                     <input placeholder={session.sessionName} type="text" name="name" class="renameSession" onChange={(e) => {setNewName(e.target.value)}}/>
-                    <button name="ok" type="submit" class="renameSessionOk">
+                    <button name="ok" type="submit" class="renameSessionOk btn-primary">
                         <span class="glyphicon glyphicon-ok"></span>
                     </button>
-                    <button name="cancel" type="submit" class="renameSessionOk">
+                    <button name="cancel" type="submit" class="renameSessionOk btn-primary">
                         <span class="glyphicon glyphicon-remove"></span>
                     </button>
                 </form>
