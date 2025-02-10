@@ -6,7 +6,12 @@
       "title": "Save current map settings",
       "loadSessionFromFile": "Load session from file",
       "enterSessionName": "Enter session name",
-      "helpText": "Save session to local storage"
+      "helpText": "Save session to local storage",
+      "closeDialogue": "Close dialogue",
+      "exportMultipleSessions": "Export multiple sessions",
+      "invalidJsonError" : "Invalid JSON file",
+      "selectValidJsonError": "Please select a valid JSON file.",
+      "all": "All"
     }
   }
 }

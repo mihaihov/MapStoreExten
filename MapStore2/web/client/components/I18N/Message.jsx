@@ -17,7 +17,6 @@ class Message extends React.Component {
         msgId: PropTypes.string.isRequired,
         msgParams: PropTypes.object
     };
-
     static contextTypes = {
         intl: PropTypes.object
     };

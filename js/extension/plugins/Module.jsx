@@ -6,6 +6,7 @@ import { addLayer, clearLayers } from "@mapstore/actions/layers";
 import React from 'react';
 import Message from "@mapstore/components/I18N/HTML";
 import '../../../assets/style.css';
+import { useEffect } from "react";
 
 
 export default {

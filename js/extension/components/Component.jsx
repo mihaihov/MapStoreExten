@@ -3,10 +3,9 @@ import '../../../assets/style.css'
 import Session from "./Session";
 import { useEffect } from "react";
 import Message from "@mapstore/components/I18N/Message";
-
+import { getMessageById } from "@mapstore/utils/LocaleUtils";
 
 const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, clearLayers, entireMap, changeMapView, closeDialogue }) => {
-
     //adds/remove offset to the toolbar when extension is enabled.
     useEffect(() => {
         const toolbar = document.getElementById("navigationBar-container");
@@ -15,14 +14,14 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
             const currentMarginRight = parseInt(window.getComputedStyle(toolbar).right, 10) || 0;
             
             if (dialogueState) {
-                if (currentMarginRight < 500) {
-                    toolbar.style.marginRight = "500px";
+                if (currentMarginRight != 500) {
+                    toolbar.style.right = "500px";
                 }
             } else {
-                toolbar.style.marginRight = "0px";
+                toolbar.style.right = "0px";
             }
         }
-    }, [dialogueState]);
+    }, [dialogueState, entireMap.maplayout.layout.right]);
     
 
     // DRAG & DROP FUNCTIONALITY START
@@ -77,21 +76,17 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
     const [itemsPerPage, setItemsPerPage] = useState(3); 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const [currentItems, setCurrentItems] = useState([]);
-    const totalPages = itemsPerPage === "All" ? 1 : Math.ceil((localStorageSessions?.length || 0) / itemsPerPage);
+    const totalPages = itemsPerPage === getMessageById(entireMap.locale.messages, "extension.all") ? 1 : Math.ceil((localStorageSessions?.length || 0) / itemsPerPage);
 
     useEffect(() => {
-        console.log("currentPage "+ currentPage);
-        console.log("startIndex "+ startIndex);
-        console.log("currentItems ");
         
-        setCurrentItems(itemsPerPage === "All"
+        setCurrentItems(itemsPerPage === getMessageById(entireMap.locale.messages, "extension.all")
         ? localStorageSessions // Show all items when All is selected
         : localStorageSessions?.slice(startIndex, startIndex + itemsPerPage)) || []
-        console.log(currentItems);
     },[localStorageSessions, itemsPerPage, currentPage])
 
     const handleItemsPerPageChange = (e) => {
-        const value = e.target.value === "All" ? "All" : parseInt(e.target.value, 10);
+        const value = e.target.value === getMessageById(entireMap.locale.messages, "extension.all") ? getMessageById(entireMap.locale.messages, "extension.all") : parseInt(e.target.value, 10);
         setItemsPerPage(value);
         setCurrentPage(1); // Reset to the first page when changing items per page
     };
@@ -156,13 +151,13 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
                 try {
                     addSessionsToLocalStorage(JSON.parse(e.target.result));
                 } catch (error) {
-                    console.error("Invalid JSON file", error);
-                    alert("Invalid JSON file.");
+                    console.error(getMessageById(entireMap.locale.messages, "extension.invalidJsonError"), error);
+                    alert(getMessageById(entireMap.locale.messages, "extension.invalidJsonError"));
                 }
             };
             reader.readAsText(file);
         } else {
-            alert("Please select a valid JSON file.");
+            alert(getMessageById(entireMap.locale.messages, "extension.selectValidJsonError"));
         }
     };
 
@@ -222,7 +217,7 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
                         <span class="glyphicon glyphicon-folder-open"></span>
                     </div>
                     <h4><span class = "pluginTitle">Manage sessions in local storage</span></h4>
-                    <button type="button" class="square-button ms-close btn btn-primary closeDialogueButton" title="Close Dialogue">
+                    <button type="button" class="square-button ms-close btn btn-primary closeDialogueButton" title={getMessageById(entireMap.locale.messages, "extension.closeDialogue")}>
                         <span class="glyphicon glyphicon-1-close" onClick={() => { closeDialogue() }}></span>
                     </button>
                 </div>
@@ -232,21 +227,21 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
                 <Message msgId="extension.title" />
             </h4>
             <form onSubmit={saveSessionToLocalStorage} className="formStyle form-group">
-                <input placeholder="Enter session name" type="text" name="name" onChange={handleInputChange} class="inputName form-control" />
+                <input placeholder={getMessageById(entireMap.locale.messages,"extension.saveToLocalStorage")} type="text" name="name" onChange={handleInputChange} class="inputName form-control" />
                 <button type="submit" className="saveSessionButton btn-primary square-button btn">
                     <span class="glyphicon glyphicon-cloud-download" style={{marginRight: '6px'}}></span>
                     <Message msgId="extension.saveToLocalStorage" />
                 </button>
             </form>
             <div style={{display: 'flex', flexDirection: 'row', width: '100%', paddingLeft: '10px', paddingRight: '10px'}}>
-                <button class="btn" title="Export selected sessions" style={{paddingTop: '0px', paddingBottom: '0px', visibility: selectedSessions.length >= 2 ? 'visible' : 'hidden', fontSize:'30px', backgroundColor: 'transparent', border: 'none' }}  onClick={() => { exportMultipleSessions() }}>
+                <button class="btn" title={getMessageById(entireMap.locale.messages, "extension.exportMultipleSessions")} style={{paddingTop: '0px', paddingBottom: '0px', visibility: selectedSessions.length >= 2 ? 'visible' : 'hidden', fontSize:'30px', backgroundColor: 'transparent', border: 'none' }}  onClick={() => { exportMultipleSessions() }}>
                     <span class="glyphicon glyphicon-save glyphicon"> </span>
                 </button>
             </div>
 
             <div className={`mainSessionContainer`}>
                 {currentItems?.map((item, index) => (
-                    <div draggable key={index} onDragStart = {(e) => {setDragSession(index);     e.dataTransfer.effectAllowed = "move";
+                    <div draggable key={item.sessionName} onDragStart = {(e) => {setDragSession(index);     e.dataTransfer.effectAllowed = "move";
                         e.dataTransfer.setData("text/plain", index);}}
                                     onDragEnter = {() => {setDraggedOverSession(index);}}
                                     onDragEnd = {(e) => handleSort(e)}
@@ -255,7 +250,6 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
                         <Session
                             checked={selectedSessions.some(s => s.sessionName === item.sessionName)}
                             onCheckChange={ () => handleCheckboxChange(item)}
-                            key={index}
                             session={item}
                             changeZoomLevel={changeZoomLevel}
                             addLayer={addLayer}
@@ -283,6 +277,30 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
 
             {uploadedData && <pre>{JSON.stringify(uploadedData, null, 2)}</pre>}
 
+
+            {/* renderPagination = () => {
+        if (this.props.result && !this.props.isNewServiceAdded) {
+                let total = this.props.result.numberOfRecordsMatched;
+            let returned = this.props.result.numberOfRecordsReturned;
+            let start = this.props.searchOptions.startPosition;
+            // let next = this.props.result.nextRecord;
+            let pageSize = this.props.pageSize;
+            let page = Math.floor(start / pageSize);
+            let pageN = Math.ceil(total / pageSize);
+            return (<div className="catalog-pagination"><Pagination
+                prev next first last ellipsis boundaryLinks
+                bsSize="small"
+                items={pageN}
+                maxButtons={5}
+                activePage={page + 1}
+                onSelect={this.handlePage} />
+                <div className="push-right">
+                    <Message msgId="catalog.pageInfo" msgParams={{ start, end: start + returned - 1, total }} />
+                </div>
+            </div>);
+        }
+            return null;
+    }; */}
             {/* //paginator */}
             <div class="paginatorContainer">
                 <div className="pagination-settings">
@@ -290,9 +308,9 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
                         <option value="3">3</option>
                         <option value="5">5</option>
                         <option value="10">10</option>
-                        <option value="All">All</option>
+                        <option value={getMessageById(entireMap.locale.messages, "extension.all")}>{getMessageById(entireMap.locale.messages, "extension.all")}</option>
                     </select>)}
-                    {itemsPerPage !== "All" && (
+                    {itemsPerPage !== getMessageById(entireMap.locale.messages, "extension.all") && (
                         <nav aria-label="Pagination">
                             <ul className="pagination">
                                 <li className="page-item">
@@ -303,7 +321,7 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
                                 </li>
                                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                                     <li className={`page-item ${page === currentPage ? "active" : "inactive"}`} key={page}>
-                                        <span onClick={() => setCurrentPage(page)} className="page-link">
+                                        <span onClick={() => {setCurrentPage(page);}} className="page-link">
                                             {page}
                                         </span>
                                     </li>
