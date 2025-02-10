@@ -11,7 +11,8 @@
       "exportMultipleSessions": "Esporta più sessioni",
       "invalidJsonError": "File JSON non valido",
       "selectValidJsonError": "Seleziona un file JSON valido.",
-      "all": "Tutto"
+      "all": "Tutto",
+      "info": "Consente di salvare e recuperare sessioni da e verso l'archiviazione locale del browser. Si prega di notare che l'archiviazione locale ha un limite massimo di 9,5 MB."
     }
   }
 }

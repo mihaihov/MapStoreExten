@@ -11,7 +11,8 @@
       "exportMultipleSessions": "Exportar múltiples sesiones",
       "invalidJsonError": "Archivo JSON inválido",
       "selectValidJsonError": "Por favor, seleccione un archivo JSON válido.",
-      "all": "Todo"
+      "all": "Todo",
+      "info": "Permite guardar y recuperar sesiones desde y hacia el almacenamiento local del navegador. Tenga en cuenta que el almacenamiento local tiene un límite máximo de 9,5 MB."
     }
   }
 }

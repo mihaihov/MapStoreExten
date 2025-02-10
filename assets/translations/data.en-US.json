@@ -11,7 +11,8 @@
       "exportMultipleSessions": "Export multiple sessions",
       "invalidJsonError" : "Invalid JSON file",
       "selectValidJsonError": "Please select a valid JSON file.",
-      "all": "All"
+      "all": "All",
+      "info": "Allows saving and retrieving sessions to and from local storage of the browser. Please be aware that local storage has a limit of maximum 9.5 MB."
     }
   }
 }

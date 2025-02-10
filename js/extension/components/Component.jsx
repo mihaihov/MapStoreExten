@@ -4,6 +4,7 @@ import Session from "./Session";
 import { useEffect } from "react";
 import Message from "@mapstore/components/I18N/Message";
 import { getMessageById } from "@mapstore/utils/LocaleUtils";
+import { Pagination } from 'react-bootstrap';
 
 const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, clearLayers, entireMap, changeMapView, closeDialogue }) => {
     //adds/remove offset to the toolbar when extension is enabled.
@@ -213,8 +214,8 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
         (dialogueState && <div className="map-store-panel">
             <div className="ms-header ms-primary bg-primary" style={{width: '100%'}}>
                 <div class="headerStyle">
-                    <div className="square-button bg-primary" style={{ display: 'flex' }}>
-                        <span class="glyphicon glyphicon-folder-open"></span>
+                    <div className="square-button bg-primary" style={{ display: 'flex' }} title={getMessageById(entireMap.locale.messages,"extension.info")}>
+                        <span class="glyphicon glyphicon-question-sign"></span>
                     </div>
                     <h4><span class = "pluginTitle">Manage sessions in local storage</span></h4>
                     <button type="button" class="square-button ms-close btn btn-primary closeDialogueButton" title={getMessageById(entireMap.locale.messages, "extension.closeDialogue")}>
@@ -278,68 +279,23 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
             {uploadedData && <pre>{JSON.stringify(uploadedData, null, 2)}</pre>}
 
 
-            {/* renderPagination = () => {
-        if (this.props.result && !this.props.isNewServiceAdded) {
-                let total = this.props.result.numberOfRecordsMatched;
-            let returned = this.props.result.numberOfRecordsReturned;
-            let start = this.props.searchOptions.startPosition;
-            // let next = this.props.result.nextRecord;
-            let pageSize = this.props.pageSize;
-            let page = Math.floor(start / pageSize);
-            let pageN = Math.ceil(total / pageSize);
-            return (<div className="catalog-pagination"><Pagination
-                prev next first last ellipsis boundaryLinks
-                bsSize="small"
-                items={pageN}
-                maxButtons={5}
-                activePage={page + 1}
-                onSelect={this.handlePage} />
-                <div className="push-right">
-                    <Message msgId="catalog.pageInfo" msgParams={{ start, end: start + returned - 1, total }} />
-                </div>
-            </div>);
-        }
-            return null;
-    }; */}
-            {/* //paginator */}
-            <div class="paginatorContainer">
-                <div className="pagination-settings">
-                    {localStorageSessions?.length > 0 && (<select value={itemsPerPage} onChange={handleItemsPerPageChange} class="dropDownPaginator">
-                        <option value="3">3</option>
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value={getMessageById(entireMap.locale.messages, "extension.all")}>{getMessageById(entireMap.locale.messages, "extension.all")}</option>
-                    </select>)}
-                    {itemsPerPage !== getMessageById(entireMap.locale.messages, "extension.all") && (
-                        <nav aria-label="Pagination">
-                            <ul className="pagination">
-                                <li className="page-item">
-                                    <span className="page-link" onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}>
-                                        <span aria-hidden="true">&laquo;</span>
-                                        <span className="sr-only">Previous</span>
-                                    </span>
-                                </li>
-                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                    <li className={`page-item ${page === currentPage ? "active" : "inactive"}`} key={page}>
-                                        <span onClick={() => {setCurrentPage(page);}} className="page-link">
-                                            {page}
-                                        </span>
-                                    </li>
-                                ))}
-                                <li className="page-item">
-                                    <span className="page-link" onClick={() => setCurrentPage(Math.min(currentPage + 1, totalPages))}>
-                                        <span aria-hidden="true">&raquo;</span>
-                                        <span className="sr-only">Next</span>
-                                    </span>
-                                </li>
-                            </ul>
-                        </nav>
-                    )}
-                </div>
+            
+            <div className="catalog-pagination paginatorContainer">
+                {localStorageSessions?.length > 0 && (<select value={itemsPerPage} onChange={handleItemsPerPageChange} class="dropDownPaginator">
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value={getMessageById(entireMap.locale.messages, "extension.all")}>{getMessageById(entireMap.locale.messages, "extension.all")}</option>
+                </select>)}
+                <Pagination
+                    prev next first last ellipsis boundaryLinks
+                    bsSize="small"
+                    items={totalPages}
+                    maxButtons={5}
+                    activePage={currentPage}
+                    onSelect={(eventKey) => { setCurrentPage(eventKey) }}
+                />
             </div>
-
-
-
         </div>
         ));
 }

@@ -11,7 +11,8 @@
       "exportMultipleSessions": "Mehrere Sitzungen exportieren",
       "invalidJsonError": "Ungültige JSON-Datei",
       "selectValidJsonError": "Bitte wählen Sie eine gültige JSON-Datei aus.",
-      "all": "Alle"
+      "all": "Alle",
+      "info": "Ermöglicht das Speichern und Abrufen von Sitzungen im und vom lokalen Speicher des Browsers. Bitte beachten Sie, dass der lokale Speicher auf maximal 9,5 MB begrenzt ist."
     }
   }
 }
