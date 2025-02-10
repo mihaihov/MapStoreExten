@@ -393,7 +393,7 @@ export const setIsIntervalData = (action$, { getState = () => { } } = {}) =>
  * of selection of a non-visible layer on the timeline state, causing inconsistencies
  * in case of mixed (point/interval) time based layers
  */
-export const switchOffSnapToLayer = (action$, { getState = () => { } } = {}) =>
+export const switchOffSnapToLayer = (action$, { getState = () => { } } = {}) => 
     action$.ofType(CHANGE_LAYER_PROPERTIES)
         .filter(({newProperties, layer}) => {
             const selectedLayer = selectedLayerSelector(getState());

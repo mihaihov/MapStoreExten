@@ -119,6 +119,7 @@ function layers(state = { flat: [] }, action) {
     }
     case CHANGE_LAYER_PARAMS:
     case CHANGE_LAYER_PROPERTIES: {
+        console.log("FROM CHANGE LAYER PROPERTIES");
         const flatLayers = (state.flat || []);
         let isBackground = flatLayers.reduce(
             (background, layer) => background || (layer.id === action.layer && layer.group === 'background'),
@@ -157,7 +158,7 @@ function layers(state = { flat: [] }, action) {
     case TOGGLE_NODE: {
         let nodeSelector = action.nodeType === 'layers' ? 'flat' : 'groups';
         let nodes = state[nodeSelector] || [];
-        const newNodes = deepChange(nodes, action.node, 'expanded', action.status);
+        const newNodes = deepChange(nodes, action.node, 'visibility', action.status);
         return assign({}, state, {[nodeSelector]: newNodes});
     }
     case SORT_NODE: {

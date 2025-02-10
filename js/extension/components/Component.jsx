@@ -6,7 +6,7 @@ import Message from "@mapstore/components/I18N/Message";
 import { getMessageById } from "@mapstore/utils/LocaleUtils";
 import { Pagination } from 'react-bootstrap';
 
-const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, changeZoomLevel, addLayer, clearLayers, entireMap, changeMapView, closeDialogue }) => {
+const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState,  changeZoomLevel, addLayer, clearLayers, entireMap, changeMapView, closeDialogue, changeLayerProperties}) => {
     //adds/remove offset to the toolbar when extension is enabled.
     useEffect(() => {
         const toolbar = document.getElementById("navigationBar-container");
@@ -22,7 +22,7 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
                 toolbar.style.right = "0px";
             }
         }
-    }, [dialogueState, entireMap.maplayout.layout.right]);
+    }, [dialogueState]);
     
 
     // DRAG & DROP FUNCTIONALITY START
@@ -259,6 +259,7 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState, cha
                             entireMap={entireMap}
                             removeSession={removeSession}
                             updateSessionName = {updateSessionName}
+                            changeLayerProperties = {changeLayerProperties}
                         />
                     </div>
                 ))}

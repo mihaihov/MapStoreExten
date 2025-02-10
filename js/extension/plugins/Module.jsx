@@ -2,7 +2,7 @@ import {connect} from "react-redux";
 import { name } from "../../../config";
 import SaveSessionToLocalStorageExtension from "../components/Component"
 import {changeMapView, changeZoomLevel } from "@mapstore/actions/map";
-import { addLayer, clearLayers } from "@mapstore/actions/layers";
+import { addLayer, changeLayerParams, changeLayerProperties, clearLayers } from "@mapstore/actions/layers";
 import React from 'react';
 import Message from "@mapstore/components/I18N/HTML";
 import '../../../assets/style.css';
@@ -23,7 +23,7 @@ export default {
         }, entireMap: state,
         dialogueState: state.toggleDialogue.dialogueState
     }), {
-        changeZoomLevel, addLayer, clearLayers,changeMapView, closeDialogue : () => {
+        changeZoomLevel, addLayer, clearLayers,changeMapView, changeLayerProperties, closeDialogue : () => {
             return {
                 type: 'CLOSE_DIALOGUE'
             }
@@ -40,13 +40,6 @@ export default {
                 return {dialogueState : false}
             }
             return state
-        },
-        applySession: (state = {}, action) => {
-            if(action.type === 'APPLY_SESSION')
-            {
-                
-            }
-            return state;
         }
     },
     containers: {

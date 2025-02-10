@@ -2,7 +2,7 @@ import React, { useEffect, useImperativeHandle } from 'react'
 import { useState } from 'react'
 import '../../../assets/style.css'
 
-const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMapView, removeSession, updateSessionName}) => {
+const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMapView, removeSession, updateSessionName, changeLayerProperties}) => {
 
     const compareMapToSession = (sessionLayers, entireMapLayers) =>  {
         //If map the same as session being loaded, only load annotations (if not already exists),the visibility 
@@ -16,10 +16,10 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
         }
     
         const sessionLayerIds = new Set(
-            sessionLayers.map(layer => layer.id.split("__")[0])
+            sessionLayers.map(layer => layer.id)
         );
         const entireMapLayerIds = new Set(
-            entireMapLayers.map(flat => flat.id.split("__")[0])
+            entireMapLayers.map(flat => flat.id)
         );
         
         for (let id of sessionLayerIds) {
@@ -36,14 +36,11 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
     const extractAnnotation = (layers) => {
             if (!layers || !Array.isArray(layers)) {
                 return [];
-            }
-        
-            //const featureId = annotations.featureId.split(/[-_]/).slice(1).join("-");
-        
+            }        
             return layers.filter(layer => layer.id.startsWith("annotation"));     
     }
 
-    const extractLayers = (layers, anno) => {
+    const extractLayers = (layers) => {
         if (!layers || !Array.isArray(layers)) {
             return [];
         }
@@ -66,10 +63,10 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
         if (!layer || typeof layer.id === "undefined") return false;
         if (!entireMap || !Array.isArray(entireMapLayers)) return false;
     
-        const layerIdTrimmed = layer.id.split("__")[0];
+        const layerIdTrimmed = layer.id;
     
         return entireMapLayers.flat().find(existingLayer => 
-            existingLayer.id.split("__")[0] === layerIdTrimmed
+            existingLayer.id === layerIdTrimmed
         ) || false;
     };
 
@@ -77,17 +74,19 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
         if (!group || typeof group.id === "undefined") return false;
         if (!entireMap || !Array.isArray(sessionGroups)) return false;
     
-        const layerIdTrimmed = group.id;
+        const groupId = group.id;
     
-        return sessionGroups.flat().find(existingGroup => 
-            existingGroup.id === layerIdTrimmed
+        const result = sessionGroups.flat().find(existingGroup => 
+            existingGroup.id === groupId
         ) || false;
+
+        return result;
     };
     
 
     const ApplySessionToMap = () => {
-        const sessionLayers = extractLayers(session.layers, session.annotations);
-        const mapLayers = extractLayers(entireMap.layers.flat, entireMap.annotations);
+        const sessionLayers = extractLayers(session.layers);
+        const mapLayers = extractLayers(entireMap.layers.flat);
         if(compareMapToSession(sessionLayers, mapLayers)){
         //If map is the same as session being loaded, only load annotations (if not already exists),the visibility and opacity according to session's layers.
         //else, change zoom and extent and annotations (if not alread existing.)
@@ -96,8 +95,7 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
             for (let i = 0; i < session.layers.length; i++) {
                 const mapLayer = doesLayerExistOnCurrentMap(session.layers[i], entireMap.layers.flat);
                 if (mapLayer) {
-                    entireMap.layers.flat[i].opacity = session.layers[i].opacity || 1;
-                    entireMap.layers.flat[i].visibility = session.layers[i].visibility;
+                    changeLayerProperties(entireMap.layers.flat[i].id,{opacity: session.layers[i].opacity || 1, visibility: session.layers[i].visibility});
                 }
             }           
         }
