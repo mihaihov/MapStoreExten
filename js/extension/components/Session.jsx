@@ -86,29 +86,29 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
 
     const ApplySessionToMap = () => {
         const sessionLayers = extractLayers(session.layers);
-        const mapLayers = extractLayers(entireMap.layers.flat);
+        const mapLayers = extractLayers(entireMap.flat);
         if(compareMapToSession(sessionLayers, mapLayers)){
         //If map is the same as session being loaded, only load annotations (if not already exists),the visibility and opacity according to session's layers.
         //else, change zoom and extent and annotations (if not alread existing.)
 
             //adjusts the opacity and visibility for common layers
             for (let i = 0; i < session.layers.length; i++) {
-                const mapLayer = doesLayerExistOnCurrentMap(session.layers[i], entireMap.layers.flat);
+                const mapLayer = doesLayerExistOnCurrentMap(session.layers[i], entireMap.flat);
                 if (mapLayer) {
-                    changeLayerProperties(entireMap.layers.flat[i].id,{opacity: session.layers[i].opacity || 1, visibility: session.layers[i].visibility});
+                    changeLayerProperties(entireMap.flat[i].id,{opacity: session.layers[i].opacity || 1, visibility: session.layers[i].visibility});
                 }
             }           
         }
 
         //activate/deactivate groups.
-        if(entireMap.layers.groups.length >= 1)
+        if(entireMap.groups.length >= 1)
         {
-            for (let i = 0; i< entireMap.layers.groups[0].nodes.length  ; i++)
+            for (let i = 0; i< entireMap.groups[0].nodes.length  ; i++)
                 {
-                    const mapGroup = doesGroupExistsOnCurrentMap(entireMap.layers.groups[0].nodes[i], session.groups);
+                    const mapGroup = doesGroupExistsOnCurrentMap(entireMap.groups[0].nodes[i], session.groups);
                     if(mapGroup)
                     {
-                        entireMap.layers.groups[0].nodes[i].visibility = mapGroup.visibility;
+                        entireMap.groups[0].nodes[i].visibility = mapGroup.visibility;
                     }
                 }
         }
@@ -116,7 +116,7 @@ const Session = ({session, entireMap, checked, onCheckChange, addLayer, changeMa
         const sessionAnnotations = extractAnnotation(session.layers);
         const annotationsToLoad = [];
         for (let i = 0; i < sessionAnnotations.length; i++) {
-            if (!doesLayerExistOnCurrentMap(sessionAnnotations[i], entireMap.layers.flat)) {
+            if (!doesLayerExistOnCurrentMap(sessionAnnotations[i], entireMap.flat)) {
                 const { group, ...newObject } = sessionAnnotations[i];
                 annotationsToLoad.push(newObject);
             }

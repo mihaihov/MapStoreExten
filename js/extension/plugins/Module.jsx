@@ -6,7 +6,6 @@ import { addLayer, changeLayerParams, changeLayerProperties, clearLayers } from 
 import React from 'react';
 import Message from "@mapstore/components/I18N/HTML";
 import '../../../assets/style.css';
-import { useEffect } from "react";
 
 
 export default {
@@ -20,7 +19,8 @@ export default {
             zoom: state.map?.present?.zoom,
             maxExtent: state.map?.present?.maxExtent,
             center: state.map?.present?.center
-        }, entireMap: state,
+        }, entireMap: state.layers,
+        locale: state.locale,
         dialogueState: state.toggleDialogue.dialogueState
     }), {
         changeZoomLevel, addLayer, clearLayers,changeMapView, changeLayerProperties, closeDialogue : () => {

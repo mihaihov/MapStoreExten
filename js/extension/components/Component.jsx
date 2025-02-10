@@ -6,7 +6,7 @@ import Message from "@mapstore/components/I18N/Message";
 import { getMessageById } from "@mapstore/utils/LocaleUtils";
 import { Pagination } from 'react-bootstrap';
 
-const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState,  changeZoomLevel, addLayer, clearLayers, entireMap, changeMapView, closeDialogue, changeLayerProperties}) => {
+const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState,  changeZoomLevel, addLayer, clearLayers, entireMap, locale, changeMapView, closeDialogue, changeLayerProperties}) => {
     //adds/remove offset to the toolbar when extension is enabled.
     useEffect(() => {
         const toolbar = document.getElementById("navigationBar-container");
@@ -77,17 +77,17 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState,  ch
     const [itemsPerPage, setItemsPerPage] = useState(3); 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const [currentItems, setCurrentItems] = useState([]);
-    const totalPages = itemsPerPage === getMessageById(entireMap.locale.messages, "extension.all") ? 1 : Math.ceil((localStorageSessions?.length || 0) / itemsPerPage);
+    const totalPages = itemsPerPage === getMessageById(locale.messages, "extension.all") ? 1 : Math.ceil((localStorageSessions?.length || 0) / itemsPerPage);
 
     useEffect(() => {
         
-        setCurrentItems(itemsPerPage === getMessageById(entireMap.locale.messages, "extension.all")
+        setCurrentItems(itemsPerPage === getMessageById(locale.messages, "extension.all")
         ? localStorageSessions // Show all items when All is selected
         : localStorageSessions?.slice(startIndex, startIndex + itemsPerPage)) || []
     },[localStorageSessions, itemsPerPage, currentPage])
 
     const handleItemsPerPageChange = (e) => {
-        const value = e.target.value === getMessageById(entireMap.locale.messages, "extension.all") ? getMessageById(entireMap.locale.messages, "extension.all") : parseInt(e.target.value, 10);
+        const value = e.target.value === getMessageById(locale.messages, "extension.all") ? getMessageById(locale.messages, "extension.all") : parseInt(e.target.value, 10);
         setItemsPerPage(value);
         setCurrentPage(1); // Reset to the first page when changing items per page
     };
@@ -152,13 +152,13 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState,  ch
                 try {
                     addSessionsToLocalStorage(JSON.parse(e.target.result));
                 } catch (error) {
-                    console.error(getMessageById(entireMap.locale.messages, "extension.invalidJsonError"), error);
-                    alert(getMessageById(entireMap.locale.messages, "extension.invalidJsonError"));
+                    console.error(getMessageById(locale.messages, "extension.invalidJsonError"), error);
+                    alert(getMessageById(locale.messages, "extension.invalidJsonError"));
                 }
             };
             reader.readAsText(file);
         } else {
-            alert(getMessageById(entireMap.locale.messages, "extension.selectValidJsonError"));
+            alert(getMessageById(locale.messages, "extension.selectValidJsonError"));
         }
     };
 
@@ -214,11 +214,11 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState,  ch
         (dialogueState && <div className="map-store-panel">
             <div className="ms-header ms-primary bg-primary" style={{width: '100%'}}>
                 <div class="headerStyle">
-                    <div className="square-button bg-primary" style={{ display: 'flex' }} title={getMessageById(entireMap.locale.messages,"extension.info")}>
+                    <div className="square-button bg-primary" style={{ display: 'flex' }} title={getMessageById(locale.messages,"extension.info")}>
                         <span class="glyphicon glyphicon-question-sign"></span>
                     </div>
                     <h4><span class = "pluginTitle">Manage sessions in local storage</span></h4>
-                    <button type="button" class="square-button ms-close btn btn-primary closeDialogueButton" title={getMessageById(entireMap.locale.messages, "extension.closeDialogue")}>
+                    <button type="button" class="square-button ms-close btn btn-primary closeDialogueButton" title={getMessageById(locale.messages, "extension.closeDialogue")}>
                         <span class="glyphicon glyphicon-1-close" onClick={() => { closeDialogue() }}></span>
                     </button>
                 </div>
@@ -228,14 +228,14 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState,  ch
                 <Message msgId="extension.title" />
             </h4>
             <form onSubmit={saveSessionToLocalStorage} className="formStyle form-group">
-                <input placeholder={getMessageById(entireMap.locale.messages,"extension.saveToLocalStorage")} type="text" name="name" onChange={handleInputChange} class="inputName form-control" />
+                <input placeholder={getMessageById(locale.messages,"extension.saveToLocalStorage")} type="text" name="name" onChange={handleInputChange} class="inputName form-control" />
                 <button type="submit" className="saveSessionButton btn-primary square-button btn">
                     <span class="glyphicon glyphicon-cloud-download" style={{marginRight: '6px'}}></span>
                     <Message msgId="extension.saveToLocalStorage" />
                 </button>
             </form>
             <div style={{display: 'flex', flexDirection: 'row', width: '100%', paddingLeft: '10px', paddingRight: '10px'}}>
-                <button class="btn" title={getMessageById(entireMap.locale.messages, "extension.exportMultipleSessions")} style={{paddingTop: '0px', paddingBottom: '0px', visibility: selectedSessions.length >= 2 ? 'visible' : 'hidden', fontSize:'30px', backgroundColor: 'transparent', border: 'none' }}  onClick={() => { exportMultipleSessions() }}>
+                <button class="btn" title={getMessageById(locale.messages, "extension.exportMultipleSessions")} style={{paddingTop: '0px', paddingBottom: '0px', visibility: selectedSessions.length >= 2 ? 'visible' : 'hidden', fontSize:'30px', backgroundColor: 'transparent', border: 'none' }}  onClick={() => { exportMultipleSessions() }}>
                     <span class="glyphicon glyphicon-save glyphicon"> </span>
                 </button>
             </div>
@@ -286,7 +286,7 @@ const SaveSessionToLocalStorageExtension = ({ currentSession, dialogueState,  ch
                     <option value="3">3</option>
                     <option value="5">5</option>
                     <option value="10">10</option>
-                    <option value={getMessageById(entireMap.locale.messages, "extension.all")}>{getMessageById(entireMap.locale.messages, "extension.all")}</option>
+                    <option value={getMessageById(locale.messages, "extension.all")}>{getMessageById(locale.messages, "extension.all")}</option>
                 </select>)}
                 <Pagination
                     prev next first last ellipsis boundaryLinks
